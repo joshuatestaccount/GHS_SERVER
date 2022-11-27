@@ -1,0 +1,236 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["interactiveTransactions", "fullTextSearch"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  userID       String         @id @default(cuid())
+  email        String         @unique
+  password     String
+  role         Role
+  createdAt    DateTime       @db.Date
+  updatedAt    DateTime       @db.Date
+  companyID    String
+  Company      Company        @relation(fields: [companyID], references: [companyID])
+  Comment      Comment?
+  Endorse      Endorse[]
+  Endorsement  Endorsement[]
+  Feedback     Feedback?
+  interviewer  Interviewer[]
+  JobPost      JobPost[]
+  Notification Notification[]
+  Profile      Profile?
+  Logs         Logs[]
+}
+
+model Logs {
+  logsID     String   @id @default(cuid())
+  title      String
+  modifiedBy String
+  createdAt  DateTime @db.Date
+  updatedAt  DateTime @db.Date
+  User       User[]
+}
+
+model Notification {
+  notificationID     String             @id @default(cuid())
+  notifiactionStatus notificationStatus @default(unread)
+  createdAt          DateTime           @db.Date
+  userID             String?
+  User               User?              @relation(fields: [userID], references: [userID], onDelete: Cascade)
+  JobPost            JobPost?
+}
+
+model Profile {
+  profileID     String       @id @default(cuid())
+  firstname     String
+  lastname      String
+  phone         String
+  birthday      DateTime?    @db.Date
+  endorsementID String?      @unique
+  applicantID   String?      @unique
+  userID        String?      @unique
+  Applicant     Applicant?   @relation(fields: [applicantID], references: [applicantID], onDelete: Cascade)
+  Endorsement   Endorsement? @relation(fields: [endorsementID], references: [endorsementID], onDelete: Cascade)
+  User          User?        @relation(fields: [userID], references: [userID], onDelete: Cascade)
+  Address       Address?
+}
+
+model Address {
+  addressID        String          @id @default(cuid())
+  city             String
+  province         String
+  zipcode          String
+  street           String
+  profileID        String?         @unique
+  companyDetailsID String?         @unique
+  Company_Details  CompanyDetails? @relation(fields: [companyDetailsID], references: [companyDetailsID], onDelete: Cascade)
+  Profile          Profile?        @relation(fields: [profileID], references: [profileID], onDelete: Cascade)
+}
+
+model Company {
+  companyID   String          @id @default(cuid())
+  companyName String
+  details     CompanyDetails?
+  Endorse     Endorse[]
+  Endorsement Endorsement[]
+  jobPost     JobPost[]
+  User        User[]
+}
+
+model CompanyDetails {
+  companyDetailsID String   @id @default(cuid())
+  description      String
+  mission          String?
+  vision           String?
+  companyID        String?  @unique
+  Company          Company? @relation(fields: [companyID], references: [companyID], onDelete: Cascade)
+  location         Address?
+}
+
+model Comment {
+  commentID     String       @id @default(cuid())
+  message       String
+  notes         String
+  createdAt     DateTime     @db.Date
+  updatedAt     DateTime     @db.Date
+  endorsementID String?      @unique
+  userID        String?      @unique
+  Endorsement   Endorsement? @relation(fields: [endorsementID], references: [endorsementID], onDelete: Cascade)
+  User          User?        @relation(fields: [userID], references: [userID], onDelete: Cascade)
+}
+
+model Endorsement {
+  endorsementID String    @id @default(cuid())
+  email         String
+  Status        String
+  createdAt     DateTime  @db.Date
+  updatedAt     DateTime  @db.Date
+  userID        String?
+  companyID     String?
+  Company       Company?  @relation(fields: [companyID], references: [companyID])
+  User          User?     @relation(fields: [userID], references: [userID], onDelete: Cascade)
+  Comment       Comment?
+  Endorse       Endorse[]
+  Profile       Profile?
+}
+
+model Endorse {
+  endorseID     String        @id @default(cuid())
+  endorseStatus endorseStatus @default(waiting)
+  userUserID    String
+  User          User          @relation(fields: [userUserID], references: [userID])
+  feedback      Feedback?
+  Company       Company?      @relation(fields: [companyID], references: [companyID])
+  companyID     String?
+  Endorsement   Endorsement?  @relation(fields: [endorsementID], references: [endorsementID])
+  endorsementID String?
+}
+
+model Feedback {
+  feedbackID String   @id @default(cuid())
+  feedback   String
+  createdAt  DateTime
+  endorseID  String?  @unique
+  userID     String?  @unique
+  Endorse    Endorse? @relation(fields: [endorseID], references: [endorseID])
+  User       User?    @relation(fields: [userID], references: [userID])
+}
+
+model Interviewer {
+  interviewerID String     @id @default(cuid())
+  createdAt     DateTime
+  userID        String
+  User          User       @relation(fields: [userID], references: [userID], onDelete: Cascade)
+  Applicant     Applicant?
+}
+
+model Applicant {
+  applicantID   String          @id @default(uuid())
+  id            String
+  email         String
+  createdAt     DateTime        @db.Date
+  updatedAt     DateTime        @db.Date
+  status        applicantStatus @default(waiting)
+  jobPostID     String
+  interviewerID String?         @unique
+  interviewer   Interviewer?    @relation(fields: [interviewerID], references: [interviewerID])
+  JobPost       JobPost         @relation(fields: [jobPostID], references: [jobPostID], onDelete: Cascade)
+  Profile       Profile?
+  FileUpload    UploadFile?
+}
+
+model UploadFile {
+  uploadFileID String     @id @default(cuid())
+  file         String
+  video        String
+  createdAt    DateTime   @db.Date
+  applicantID  String?    @unique
+  Applicant    Applicant? @relation(fields: [applicantID], references: [applicantID], onDelete: Cascade)
+}
+
+model JobPost {
+  jobPostID        String        @id @default(cuid())
+  title            String
+  description      String
+  qualification    String
+  responsibilities String
+  status           JobStatus
+  createdAt        DateTime      @db.Date
+  updatedAt        DateTime      @db.Date
+  companyID        String
+  notificationID   String?       @unique
+  userID           String
+  Company          Company       @relation(fields: [companyID], references: [companyID], onDelete: Cascade)
+  Notification     Notification? @relation(fields: [notificationID], references: [notificationID], onDelete: Cascade)
+  User             User          @relation(fields: [userID], references: [userID])
+  Applicants       Applicant[]
+  details          JobDetails?
+}
+
+model JobDetails {
+  jobDetailsID String   @id @default(cuid())
+  location     String[]
+  jobType      String[]
+  workType     String[]
+  category     String
+  salary       String
+  jobPostID    String?  @unique
+  JobPost      JobPost? @relation(fields: [jobPostID], references: [jobPostID], onDelete: Cascade)
+}
+
+enum Role {
+  administrator
+  recruiter
+  moderator
+  manager
+  employer
+}
+
+enum JobStatus {
+  inProgress
+  approved
+  rejected
+}
+
+enum applicantStatus {
+  waiting
+  approved
+  rejected
+}
+
+enum notificationStatus {
+  read
+  unread
+}
+
+enum endorseStatus {
+  waiting
+  rejected
+  approved
+}

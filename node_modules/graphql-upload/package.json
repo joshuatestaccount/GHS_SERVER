@@ -1,0 +1,96 @@
+{
+  "name": "graphql-upload",
+  "version": "16.0.2",
+  "description": "Middleware and an Upload scalar to add support for GraphQL multipart requests (file uploads via queries and mutations) to various Node.js GraphQL servers.",
+  "license": "MIT",
+  "author": {
+    "name": "Jayden Seric",
+    "email": "me@jaydenseric.com",
+    "url": "https://jaydenseric.com"
+  },
+  "repository": "github:jaydenseric/graphql-upload",
+  "homepage": "https://github.com/jaydenseric/graphql-upload#readme",
+  "bugs": "https://github.com/jaydenseric/graphql-upload/issues",
+  "funding": "https://github.com/sponsors/jaydenseric",
+  "keywords": [
+    "graphql",
+    "upload",
+    "file",
+    "multipart",
+    "request",
+    "server",
+    "middleware",
+    "koa",
+    "express",
+    "apollo",
+    "esm",
+    "mjs"
+  ],
+  "files": [
+    "GRAPHQL_MULTIPART_REQUEST_SPEC_URL.mjs",
+    "GraphQLUpload.mjs",
+    "graphqlUploadExpress.mjs",
+    "graphqlUploadKoa.mjs",
+    "ignoreStream.mjs",
+    "processRequest.mjs",
+    "Upload.mjs"
+  ],
+  "sideEffects": false,
+  "exports": {
+    "./GraphQLUpload.mjs": "./GraphQLUpload.mjs",
+    "./graphqlUploadExpress.mjs": "./graphqlUploadExpress.mjs",
+    "./graphqlUploadKoa.mjs": "./graphqlUploadKoa.mjs",
+    "./package.json": "./package.json",
+    "./processRequest.mjs": "./processRequest.mjs",
+    "./Upload.mjs": "./Upload.mjs"
+  },
+  "engines": {
+    "node": "^14.17.0 || ^16.0.0 || >= 18.0.0"
+  },
+  "peerDependencies": {
+    "@types/express": "^4.0.29",
+    "@types/koa": "^2.11.4",
+    "graphql": "^16.3.0"
+  },
+  "peerDependenciesMeta": {
+    "@types/express": {
+      "optional": true
+    },
+    "@types/koa": {
+      "optional": true
+    }
+  },
+  "dependencies": {
+    "@types/busboy": "^1.5.0",
+    "@types/node": "*",
+    "@types/object-path": "^0.11.1",
+    "busboy": "^1.6.0",
+    "fs-capacitor": "^8.0.0",
+    "http-errors": "^2.0.0",
+    "object-path": "^0.11.8"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.13",
+    "@types/koa": "^2.13.5",
+    "coverage-node": "^8.0.0",
+    "eslint": "^8.23.0",
+    "eslint-plugin-simple-import-sort": "^7.0.0",
+    "express": "^4.18.1",
+    "form-data-encoder": "^2.1.0",
+    "graphql": "^16.6.0",
+    "koa": "^2.13.4",
+    "node-abort-controller": "^3.0.1",
+    "node-fetch": "^3.2.10",
+    "prettier": "^2.6.2",
+    "test-director": "^10.0.0",
+    "typescript": "^4.8.2"
+  },
+  "scripts": {
+    "eslint": "eslint .",
+    "prettier": "prettier -c .",
+    "types": "tsc -p jsconfig.json",
+    "tests": "coverage-node --unhandled-rejections=throw test.mjs",
+    "test": "npm run eslint && npm run prettier && npm run types && npm run tests",
+    "prepublishOnly": "npm test"
+  }
+}
