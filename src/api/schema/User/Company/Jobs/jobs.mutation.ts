@@ -1,4 +1,4 @@
-import { ApolloError } from 'apollo-server-express';
+import { GraphQLError } from 'graphql';
 import Authorized, { JwtPayload } from 'jsonwebtoken';
 import { extendType, idArg, nonNull } from 'nexus'
 import { prisma, pubsub } from '../../../../../server.js'
@@ -75,7 +75,7 @@ export const jobMutation = extendType({
                         return jobPost
                     })
                 } else {
-                    throw new ApolloError("Your are required to sign in.")
+                    throw new GraphQLError("Your are required to sign in.")
                 }
 
             }
@@ -132,7 +132,7 @@ export const jobMutation = extendType({
 
                     return AMMPost
                 } else {
-                    throw new ApolloError("Your are required to sign in.")
+                    throw new GraphQLError("Your are required to sign in.")
                 }
 
             }
@@ -159,7 +159,7 @@ export const jobMutation = extendType({
 
                         await prisma.notification.update({
                             data: {
-                                notifiactionStatus: "read"
+                                notificationStatus: "read"
                             },
                             where: {
                                 notificationID: post.notificationID

@@ -3,5 +3,5 @@ import * as FeedbackMutation from './feedback.mutation.js';
 import * as FeedbackQuery from './feedback.query.js'
 
 export {
-    FeedbackMutation, FeedbackObject
+    FeedbackMutation, FeedbackObject, FeedbackQuery
 }

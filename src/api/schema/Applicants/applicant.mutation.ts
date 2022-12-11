@@ -1,4 +1,4 @@
-import { ApolloError } from 'apollo-server-core'
+import { GraphQLError } from 'graphql'
 import { extendType, idArg, intArg, list, nonNull, stringArg } from 'nexus'
 import { prisma } from '../../../server.js'
 import { AWSFileUpload, AWSVideoUpload } from '../../helpers/awsFileUpload.js'
@@ -87,8 +87,8 @@ export const applicaitonMutation = extendType({
                         id
                     }
                 })
-                if (!user) throw new ApolloError("No email existing");
-                if (!findId.id) throw new ApolloError("Invalid credentials");
+                if (!user) throw new GraphQLError("No email existing");
+                if (!findId.id) throw new GraphQLError("Invalid credentials");
 
                 return await prisma.applicant.findFirst({
                     where: {

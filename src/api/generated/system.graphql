@@ -52,6 +52,7 @@ input JobPostInput {
 
 type Mutation {
   changeEmailAddress(email: EmailAddress!, retype: EmailAddress, userID: ID!): user
+  createAFeedback(endorseID: ID!, feedback: String!, userID: ID!): feedback
   createAJobForAMM(JobDetails: jobDetailsInput, JobPost: JobPostInput, userID: ID!): JobPost
   createAJobForRecruiter(JobDetails: jobDetailsInput, JobPost: JobPostInput, userID: ID!): JobPost
   createAccount(Profile: ProfileInput, auth: AuthInput, role: roles!): user
@@ -75,6 +76,7 @@ type Mutation {
   updateApplicantStatus(applicantID: ID!, status: String!): application
   updateComment(comment: commentInput, commentID: ID!): comment
   updateCompany(companyID: ID!): company
+  updateEndorse(endorseID: ID!, endorseStatus: String!): endorse
   updateEndorsement(Status: String!, endorsementID: ID!): endorsement
   updateJobPost(JobDetails: jobDetailsInput, JobPost: JobPostInput, jobPostID: ID!): JobPost
   updateJobPostStatus(jobPostID: ID!, status: jobStatus): JobPost
@@ -101,6 +103,7 @@ type Query {
   getAllApplication: [application]
   getAllCompany: [company]
   getAllEndorse: [endorse]
+  getAllFeedback: [feedback]
   getAllJobPost: [JobPost]
   getAllNotification: [notification]
   getAllUser: [user]
@@ -108,9 +111,12 @@ type Query {
   getApplicationByStatus(limit: Int!, order: orderedBy!, status: String!): [application]
   getCompanyById(companyID: ID!): [company]
   getEmployerCompany(limit: Int!, offset: Int!): [company]
+  getEndorseByID(endorseID: ID!): [endorse]
+  getEndorseByStatus(limit: Int!, offset: Int!, order: orderedBy!, status: String!, userID: ID!): [endorse]
   getEndorsementAll: [endorsement]
   getEndorsementById(endorsementID: ID!): [endorsement]
   getEndorsementCommnet(endorsementID: ID!): [comment]
+  getEndorsementFeedback(endorsementID: String!): [endorse]
   getEndorsementSpecificStatus(limit: Int!, offset: Int!, order: orderedBy, status: String!): [endorsement]
   getEndorsmentByCSV(end: String!, order: orderedBy, start: String!, status: String!): [endorsement]
   getFindMyLocation(location: String): [jobDetails]
@@ -185,6 +191,7 @@ type company {
   companyID: ID
   companyName: String
   companyPost: [JobPost]
+  endorse: [endorse]
   user: [user]
 }
 
@@ -197,10 +204,12 @@ type company_details {
 }
 
 type endorse {
-  comapny: [company]
+  company: [company]
+  createdAt: Date
   endorseID: ID
   endorseStatus: String
   endorsement: [endorsement]
+  feedback: [feedback]
   user: [user]
 }
 
@@ -208,6 +217,7 @@ type endorsement {
   Status: String
   createdAt: Date
   email: EmailAddress
+  endorse: [endorse]
   endorseBy: [user]
   endorsementComment: [comment]
   endorsementID: ID
@@ -216,6 +226,7 @@ type endorsement {
 }
 
 type feedback {
+  createdAt: Date
   endorse: [endorse]
   feedback: String
   feedbackID: ID

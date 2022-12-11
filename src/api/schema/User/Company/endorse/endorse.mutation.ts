@@ -1,5 +1,6 @@
-import { extendType, idArg, nonNull } from "nexus";
+import { extendType, idArg, nonNull, stringArg } from "nexus";
 import { prisma } from "../../../../../server.js";
+import { Dates } from "../../../../helpers/dateFormat.js";
 
 
 
@@ -12,7 +13,7 @@ export const endorseMutation = extendType({
             resolve: async (_, { companyID, endorsementID, userID }): Promise<any> => {
                 return await prisma.endorse.create({
                     data: {
-                        
+
                         Company: {
                             connect: {
                                 companyID
@@ -23,11 +24,26 @@ export const endorseMutation = extendType({
                                 endorsementID
                             }
                         },
+                        createdAt: Dates,
                         User: {
                             connect: {
                                 userID
                             }
                         }
+                    }
+                })
+            }
+        })
+        t.field("updateEndorse", {
+            type: "endorse",
+            args: { endorseStatus: nonNull(stringArg()), endorseID: nonNull(idArg()) },
+            resolve: async (_, { endorseStatus, endorseID }, { req }): Promise<any> => {
+                return await prisma.endorse.update({
+                    data: {
+                        endorseStatus: endorseStatus as any
+                    },
+                    where: {
+                        endorseID
                     }
                 })
             }

@@ -14,7 +14,7 @@ export const notificationQuery = extendType({
                             JobPost: {
                                 status: "inProgress"
                             },
-                            notifiactionStatus: "unread"
+                            notificationStatus: "unread"
                         }
                     }
                 })
@@ -25,7 +25,7 @@ export const notificationQuery = extendType({
             resolve: async (): Promise<any> => {
                 return await prisma.notification.findMany({
                     where: {
-                        notifiactionStatus: "unread"
+                        notificationStatus: "unread"
                     }
                 })
             }

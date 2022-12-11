@@ -9,6 +9,7 @@ export const endorseObject = objectType({
     definition(t) {
         t.id("endorseID");
         t.string("endorseStatus");
+        t.date("createdAt");
         t.list.field("endorsement", {
             type: "endorsement",
             resolve: async (parent): Promise<any> => {
@@ -23,7 +24,17 @@ export const endorseObject = objectType({
                 })
             }
         })
-        t.list.field("comapny", {
+        t.list.field("feedback", {
+            type: "feedback",
+            resolve: async (parent): Promise<any> => {
+                return await prisma.feedback.findMany({
+                    where: {
+                        endorseID: parent.endorseID
+                    }
+                })
+            }
+        })
+        t.list.field("company", {
             type: "company",
             resolve: async (parent): Promise<any> => {
                 return await prisma.company.findMany({

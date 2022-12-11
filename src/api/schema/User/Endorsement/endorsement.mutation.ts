@@ -1,6 +1,6 @@
-import { ApolloError } from 'apollo-server-core'
+import { GraphQLError } from 'graphql'
 import Auth, { JwtPayload } from 'jsonwebtoken'
-import { extendType, idArg, intArg, nonNull, stringArg } from 'nexus'
+import { extendType, idArg, nonNull, stringArg } from 'nexus'
 import { prisma, pubsub } from '../../../../server.js'
 import { Dates } from '../../../helpers/dateFormat.js'
 
@@ -24,7 +24,7 @@ export const endorsementMutation = extendType({
                     }
                 })
                 if (!findUser.userID && !findUser.role) {
-                    throw new ApolloError("Invalid information")
+                    throw new GraphQLError("Invalid information")
                 }
 
                 const token = req.cookies[ "ghs_access_token" ];

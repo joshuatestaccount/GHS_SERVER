@@ -31,6 +31,16 @@ export const endorsementObject = objectType({
                 })
             }
         })
+        t.list.field("endorse", {
+            type: "endorse",
+            resolve: async (parent): Promise<any> => {
+                return await prisma.endorse.findMany({
+                    where: {
+                        endorsementID: parent.endorsementID
+                    }
+                })
+            }
+        })
         t.list.field("endorseBy", {
             type: "user",
             resolve: async (parent): Promise<any> => {

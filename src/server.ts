@@ -1,10 +1,10 @@
-import { ApolloServer } from "apollo-server-express/dist/ApolloServer.js"
+import { ApolloServer } from "@apollo/server"
 import { makeSchema } from 'nexus/dist/makeSchema.js'
 import { createServer } from "http"
 import { WebSocketServer } from 'ws'
 import { useServer } from "graphql-ws/lib/use/ws"
 import { expressjwt } from 'express-jwt'
-import { ApolloServerPluginDrainHttpServer } from 'apollo-server-core'
+import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer"
 import { join } from 'path'
 import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.mjs'
 import authorization from 'nexus';
@@ -16,9 +16,13 @@ import { PrismaClient } from '@prisma/client'
 import { PubSub } from "graphql-subscriptions/dist/pubsub.js"
 export const prisma = new PrismaClient()
 export const pubsub = new PubSub()
+import cors from 'cors'
+import pgk from 'body-parser'
+const { json } = pgk
 dotenv.config()
 
 import * as Information from './api/schema/compile.js'
+import { expressMiddleware } from "@apollo/server/express4"
 
 export const startApolloServer = async () => {
     const app = express()
@@ -51,9 +55,6 @@ export const startApolloServer = async () => {
     const server = new ApolloServer({
         schema,
         csrfPrevention: true,
-        debug: true,
-        cache: "bounded",
-        context: ({ req, res }) => ({ req, res }),
         introspection: true,
         plugins: [
             ApolloServerPluginDrainHttpServer({ httpServer }),
@@ -61,7 +62,7 @@ export const startApolloServer = async () => {
                 async serverWillStart() {
                     return {
                         async drainServer() {
-                            await serverCleanup.dispose()
+                            await serverCleanup.dispose();
                         }
                     }
                 }
@@ -71,16 +72,15 @@ export const startApolloServer = async () => {
 
     await server.start()
 
-    await server.applyMiddleware({
-        app, path: "/graphql",
-        cors: {
-            credentials: true,
-            origin: [ "https://studio.apollographql.com", "http://localhost:3000" ]
-        }
-    })
+    app.use("/graphql", cors<cors.CorsRequest>({
+        origin: [ "http://localhost:3000", "https://studio.apollographql.com" ],
+        credentials: true,
+    }), json(), expressMiddleware(server, {
+        context: async ({ req, res }) => ({ req, res })
+    }))
 
-    await new Promise(() => {
-        httpServer.listen({ port: process.env.PORT || 4000 })
+    await new Promise<void>((resolve) => {
+        httpServer.listen({ port: process.env.PORT || 4000 }, resolve)
         console.log(`Relaunching Server... Listening on port 4000`)
     })
 }

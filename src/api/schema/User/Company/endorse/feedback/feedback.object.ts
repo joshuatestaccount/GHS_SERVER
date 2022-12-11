@@ -8,6 +8,7 @@ export const feedbackObject = objectType({
     definition(t) {
         t.id("feedbackID");
         t.string("feedback");
+        t.date("createdAt");
         t.list.field("user", {
             type: "user",
             resolve: async (parent): Promise<any> => {

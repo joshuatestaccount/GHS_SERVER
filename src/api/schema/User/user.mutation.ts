@@ -2,8 +2,7 @@ import { extendType, idArg, inputObjectType, intArg, list, nonNull, stringArg } 
 import bcrypt from 'bcryptjs'
 import { prisma, pubsub } from '../../../server.js'
 import signature, { JwtPayload } from 'jsonwebtoken'
-
-import { ApolloError, AuthenticationError } from 'apollo-server-core'
+import { GraphQLError } from 'graphql'
 import { Dates } from '../../helpers/dateFormat.js'
 
 const { sign, verify } = signature
@@ -137,9 +136,9 @@ export const userMutation = extendType({
                     }
                 })
 
-                if (!user) throw new ApolloError("Email address is not found")
+                if (!user) throw new GraphQLError("Email address is not found")
                 const valid = await bcrypt.compare(password, user.password)
-                if (!valid) throw new AuthenticationError("Invalid Credentials");
+                if (!valid) throw new GraphQLError("Invalid Credentials");
 
                 const token = sign({ userID: user.userID, role: user.role }, "HeadStart", {
                     algorithm: "HS512",
@@ -250,7 +249,7 @@ export const userMutation = extendType({
             type: "user",
             args: { email: nonNull("EmailAddress"), retype: "EmailAddress", userID: nonNull(idArg()) },
             resolve: async (_, { email, retype, userID }): Promise<any> => {
-                if (email !== retype) throw new ApolloError("Email Address is not matched")
+                if (email !== retype) throw new GraphQLError("Email Address is not matched")
                 return await prisma.user.update({
                     data: {
                         email
@@ -268,7 +267,7 @@ export const userMutation = extendType({
                 password: nonNull(stringArg()), retype: nonNull(stringArg()), userID: nonNull(idArg())
             },
             resolve: async (_, { password, retype, userID }): Promise<any> => {
-                if (password !== retype) throw new ApolloError("Password is not Matched")
+                if (password !== retype) throw new GraphQLError("Password is not Matched")
                 const pass = await bcrypt.hash(password, 12);
                 return await prisma.user.update({
                     data: {

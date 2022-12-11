@@ -1,6 +1,6 @@
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["interactiveTransactions", "fullTextSearch"]
+  previewFeatures = ["fullTextSearch"]
 }
 
 datasource db {
@@ -39,7 +39,7 @@ model Logs {
 
 model Notification {
   notificationID     String             @id @default(cuid())
-  notifiactionStatus notificationStatus @default(unread)
+  notificationStatus notificationStatus @default(unread)
   createdAt          DateTime           @db.Date
   userID             String?
   User               User?              @relation(fields: [userID], references: [userID], onDelete: Cascade)
@@ -123,8 +123,9 @@ model Endorsement {
 model Endorse {
   endorseID     String        @id @default(cuid())
   endorseStatus endorseStatus @default(waiting)
-  userUserID    String
-  User          User          @relation(fields: [userUserID], references: [userID])
+  userID        String
+  createdAt     DateTime      @db.Date
+  User          User          @relation(fields: [userID], references: [userID])
   feedback      Feedback?
   Company       Company?      @relation(fields: [companyID], references: [companyID])
   companyID     String?

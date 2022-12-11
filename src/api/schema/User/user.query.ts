@@ -1,5 +1,5 @@
 
-import { ApolloError } from "apollo-server-core";
+import { GraphQLError } from "graphql";
 import authorization, { JwtPayload, } from "jsonwebtoken";
 import { extendType, idArg, intArg, nonNull, stringArg } from "nexus";
 import { prisma } from '../../../server.js'
@@ -16,7 +16,7 @@ export const UserQuery = extendType({
                 if (userID && role === "administrator" || "moderator") {
                     return await prisma.user.findMany()
                 } else {
-                    throw new ApolloError("UnAuthorized")
+                    throw new GraphQLError("UnAuthorized")
                 }
             }
         })
@@ -49,7 +49,7 @@ export const UserQuery = extendType({
                         }
                     })
                 } else {
-                    throw new ApolloError("UnAuthorized")
+                    throw new GraphQLError("UnAuthorized")
                 }
 
             }

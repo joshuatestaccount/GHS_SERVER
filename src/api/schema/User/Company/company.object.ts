@@ -7,6 +7,16 @@ export const companyObject = objectType({
     definition(t) {
         t.id("companyID");
         t.string("companyName");
+        t.list.field("endorse", {
+            type: "endorse",
+            resolve: async (parent): Promise<any> => {
+                return await prisma.endorse.findMany({
+                    where: {
+                        companyID: parent.companyID
+                    }
+                })
+            }
+        })
         t.list.field("comapnyDetails", {
             type: "company_details",
             resolve: async (parent): Promise<any> => {
