@@ -35,7 +35,11 @@ export const endorsementObject = objectType({
             resolve: async (parent): Promise<any> => {
                 return await prisma.endorse.findMany({
                     where: {
-                        endorsementID: parent.endorsementID
+                         Endorsement: {
+                            some: {
+                                endorsementID: parent.endorsementID
+                            }
+                         }
                     }
                 })
             }
