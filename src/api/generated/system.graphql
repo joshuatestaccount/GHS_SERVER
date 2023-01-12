@@ -30,6 +30,7 @@ enum FilterOderBy {
 }
 
 type JobPost {
+  _count: Int
   applicants: [application]
   createdAt: Date
   description: String
@@ -61,29 +62,28 @@ type Mutation {
   createComment(comments: commentInput, endorsementID: ID!): comment
   createEmployer(auth: AuthInput!, companyName: String!, profile: ProfileInput): user
   createEndorse(companyID: ID!, endorsementID: ID!, userID: ID!): endorse
-  createEndorsement(Address: AddressInput, Profile: ProfileInput, email: EmailAddress!, userID: ID!): endorsement
   createInterviewer(applicantID: ID!, userID: ID!): interviewer
   deleteCompany(companyID: ID!): company
   deleteEndorsement(endorsementID: ID!): endorsement
   deleteJobPost(jobPostID: ID!): JobPost
   deleteUser(userID: ID!): user
-  generateApplicantCSV(end: String!, limit: Int!, order: orderedBy!, start: String!, status: String!): application
+  generateApplicantCSV(end: String!, order: String!, start: String!, status: String!): [application]
   getDetailsFitlerAndSorting(category: String, jobType: String, location: String, workType: String): [jobDetails]
   getEndorsmentByCSV(end: String!, order: orderedBy, start: String!, status: String!): [endorsement]
   login(Auth: AuthInput): token
   updateAddressByProfileID(Address: AddressInput, profileID: ID!): [address]
   updateAllContentUserProfile(email: EmailAddress, profile: ProfileInput, userID: ID!): user
-  updateApplicantStatus(applicantID: ID!, status: String!): application
+  updateApplicantStatus(applicantID: ID!, status: String!, userID: ID!): application
   updateComment(comment: commentInput, commentID: ID!): comment
   updateCompany(companyID: ID!): company
-  updateEndorse(endorseID: ID!, endorseStatus: String!): endorse
+  updateEndorse(endorseID: ID!, endorseStatus: String!, userID: ID!): endorse
   updateEndorsement(Status: String!, endorsementID: ID!): endorsement
   updateJobPost(JobDetails: jobDetailsInput, JobPost: JobPostInput, jobPostID: ID!): JobPost
   updateJobPostStatus(jobPostID: ID!, status: jobStatus): JobPost
   updatePassword(userID: ID!): user
   updateProfile(Profile: ProfileInput, profileID: ID!): profile
   updateUserPassword(password: String!, retype: String!, userID: ID!): user
-  viewMyApplication(email: EmailAddress, id: String!): application
+  viewMyApplication(email: EmailAddress!, id: String!): token
 }
 
 """
@@ -101,30 +101,40 @@ input ProfileInput {
 type Query {
   getAddressQuery: [address]
   getAllApplication: [application]
+  getAllApplicationDateCount: [countByGroup]
   getAllCompany: [company]
+  getAllCountJob: [JobPost]
   getAllEndorse: [endorse]
+  getAllEndorsementByGroup: [countByGroup]
   getAllFeedback: [feedback]
-  getAllJobPost: [JobPost]
+  getAllJobPost(limit: Int!, offset: Int!, order: orderedBy!): [JobPost]
   getAllNotification: [notification]
   getAllUser: [user]
+  getApplicantByDWMY(select: String!): [countByGroup]
   getApplicantByID(applicationID: ID!): [application]
   getApplicationByStatus(limit: Int!, order: orderedBy!, status: String!): [application]
   getCompanyById(companyID: ID!): [company]
+  getCompanyPartner: [company]
   getEmployerCompany(limit: Int!, offset: Int!): [company]
+  getEmployerCompanyGroup: [countByGroup]
   getEndorseByID(endorseID: ID!): [endorse]
   getEndorseByStatus(limit: Int!, offset: Int!, order: orderedBy!, status: String!, userID: ID!): [endorse]
   getEndorsementAll: [endorsement]
+  getEndorsementByDWMY(select: String!): [countByGroup]
   getEndorsementById(endorsementID: ID!): [endorsement]
   getEndorsementCommnet(endorsementID: ID!): [comment]
   getEndorsementFeedback(endorsementID: String!): [endorse]
   getEndorsementSpecificStatus(limit: Int!, offset: Int!, order: orderedBy, status: String!): [endorsement]
-  getEndorsmentByCSV(end: String!, order: orderedBy, start: String!, status: String!): [endorsement]
   getFindMyLocation(location: String): [jobDetails]
+  getGroubyByJob: [countByGroup]
   getJobByStatus(offset: Int!, order: orderedBy, status: String!, take: Int!): [JobPost]
   getJobPostById(jobPostID: ID!): [JobPost]
+  getJobPostDWMY(select: String!): [countByGroup]
   getJobPostSearch(search: String!): [JobPost]
+  getJobRelated(category: String!, limit: Int!, offset: Int!): [jobDetails]
   getNotificationByStatus: [notification]
   getNotificationID(notificationID: ID!): [notification]
+  getSpecificJob(category: String, jobType: [String], limit: Int!, offset: Int!, workType: [String]): [jobDetails]
   getUserByID(userID: ID!): [user]
   getUserByRoles(limit: Int!, offset: Int!, order: orderedBy, role: String): [user]
   getUserLogs(limit: Int!, offset: Int!, userID: ID!): [logs]
@@ -203,6 +213,11 @@ type company_details {
   vission: String
 }
 
+type countByGroup {
+  _count: Int
+  createdAt: Date
+}
+
 type endorse {
   company: [company]
   createdAt: Date
@@ -215,13 +230,12 @@ type endorse {
 
 type endorsement {
   Status: String
+  applicants: [application]
   createdAt: Date
-  email: EmailAddress
   endorse: [endorse]
   endorseBy: [user]
   endorsementComment: [comment]
   endorsementID: ID
-  profile: [profile]
   updatedAt: Date
 }
 
@@ -284,7 +298,9 @@ type notification {
   notificationID: ID
   notificationJob: [JobPost]
   notificationStatus: String
+  title: String
   user: [user]
+  userApplications: [application]
 }
 
 enum orderedBy {

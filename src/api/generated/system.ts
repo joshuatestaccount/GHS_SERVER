@@ -110,6 +110,7 @@ export interface NexusGenScalars {
 
 export interface NexusGenObjects {
   JobPost: { // root type
+    _count?: number | null; // Int
     createdAt?: NexusGenScalars['Date'] | null; // Date
     description?: string | null; // String
     jobPostID?: string | null; // ID
@@ -153,6 +154,10 @@ export interface NexusGenObjects {
     mission?: string | null; // String
     vission?: string | null; // String
   }
+  countByGroup: { // root type
+    _count?: number | null; // Int
+    createdAt?: NexusGenScalars['Date'] | null; // Date
+  }
   endorse: { // root type
     createdAt?: NexusGenScalars['Date'] | null; // Date
     endorseID?: string | null; // ID
@@ -161,7 +166,6 @@ export interface NexusGenObjects {
   endorsement: { // root type
     Status?: string | null; // String
     createdAt?: NexusGenScalars['Date'] | null; // Date
-    email?: NexusGenScalars['EmailAddress'] | null; // EmailAddress
     endorsementID?: string | null; // ID
     updatedAt?: NexusGenScalars['Date'] | null; // Date
   }
@@ -199,6 +203,7 @@ export interface NexusGenObjects {
     createdAt?: NexusGenScalars['Date'] | null; // Date
     notificationID?: string | null; // ID
     notificationStatus?: string | null; // String
+    title?: string | null; // String
   }
   profile: { // root type
     birthday?: NexusGenScalars['Date'] | null; // Date
@@ -231,6 +236,7 @@ export type NexusGenAllTypes = NexusGenRootTypes & NexusGenScalars & NexusGenEnu
 
 export interface NexusGenFieldTypes {
   JobPost: { // field return type
+    _count: number | null; // Int
     applicants: Array<NexusGenRootTypes['application'] | null> | null; // [application]
     createdAt: NexusGenScalars['Date'] | null; // Date
     description: string | null; // String
@@ -254,13 +260,12 @@ export interface NexusGenFieldTypes {
     createComment: NexusGenRootTypes['comment'] | null; // comment
     createEmployer: NexusGenRootTypes['user'] | null; // user
     createEndorse: NexusGenRootTypes['endorse'] | null; // endorse
-    createEndorsement: NexusGenRootTypes['endorsement'] | null; // endorsement
     createInterviewer: NexusGenRootTypes['interviewer'] | null; // interviewer
     deleteCompany: NexusGenRootTypes['company'] | null; // company
     deleteEndorsement: NexusGenRootTypes['endorsement'] | null; // endorsement
     deleteJobPost: NexusGenRootTypes['JobPost'] | null; // JobPost
     deleteUser: NexusGenRootTypes['user'] | null; // user
-    generateApplicantCSV: NexusGenRootTypes['application'] | null; // application
+    generateApplicantCSV: Array<NexusGenRootTypes['application'] | null> | null; // [application]
     getDetailsFitlerAndSorting: Array<NexusGenRootTypes['jobDetails'] | null> | null; // [jobDetails]
     getEndorsmentByCSV: Array<NexusGenRootTypes['endorsement'] | null> | null; // [endorsement]
     login: NexusGenRootTypes['token'] | null; // token
@@ -276,35 +281,45 @@ export interface NexusGenFieldTypes {
     updatePassword: NexusGenRootTypes['user'] | null; // user
     updateProfile: NexusGenRootTypes['profile'] | null; // profile
     updateUserPassword: NexusGenRootTypes['user'] | null; // user
-    viewMyApplication: NexusGenRootTypes['application'] | null; // application
+    viewMyApplication: NexusGenRootTypes['token'] | null; // token
   }
   Query: { // field return type
     getAddressQuery: Array<NexusGenRootTypes['address'] | null> | null; // [address]
     getAllApplication: Array<NexusGenRootTypes['application'] | null> | null; // [application]
+    getAllApplicationDateCount: Array<NexusGenRootTypes['countByGroup'] | null> | null; // [countByGroup]
     getAllCompany: Array<NexusGenRootTypes['company'] | null> | null; // [company]
+    getAllCountJob: Array<NexusGenRootTypes['JobPost'] | null> | null; // [JobPost]
     getAllEndorse: Array<NexusGenRootTypes['endorse'] | null> | null; // [endorse]
+    getAllEndorsementByGroup: Array<NexusGenRootTypes['countByGroup'] | null> | null; // [countByGroup]
     getAllFeedback: Array<NexusGenRootTypes['feedback'] | null> | null; // [feedback]
     getAllJobPost: Array<NexusGenRootTypes['JobPost'] | null> | null; // [JobPost]
     getAllNotification: Array<NexusGenRootTypes['notification'] | null> | null; // [notification]
     getAllUser: Array<NexusGenRootTypes['user'] | null> | null; // [user]
+    getApplicantByDWMY: Array<NexusGenRootTypes['countByGroup'] | null> | null; // [countByGroup]
     getApplicantByID: Array<NexusGenRootTypes['application'] | null> | null; // [application]
     getApplicationByStatus: Array<NexusGenRootTypes['application'] | null> | null; // [application]
     getCompanyById: Array<NexusGenRootTypes['company'] | null> | null; // [company]
+    getCompanyPartner: Array<NexusGenRootTypes['company'] | null> | null; // [company]
     getEmployerCompany: Array<NexusGenRootTypes['company'] | null> | null; // [company]
+    getEmployerCompanyGroup: Array<NexusGenRootTypes['countByGroup'] | null> | null; // [countByGroup]
     getEndorseByID: Array<NexusGenRootTypes['endorse'] | null> | null; // [endorse]
     getEndorseByStatus: Array<NexusGenRootTypes['endorse'] | null> | null; // [endorse]
     getEndorsementAll: Array<NexusGenRootTypes['endorsement'] | null> | null; // [endorsement]
+    getEndorsementByDWMY: Array<NexusGenRootTypes['countByGroup'] | null> | null; // [countByGroup]
     getEndorsementById: Array<NexusGenRootTypes['endorsement'] | null> | null; // [endorsement]
     getEndorsementCommnet: Array<NexusGenRootTypes['comment'] | null> | null; // [comment]
     getEndorsementFeedback: Array<NexusGenRootTypes['endorse'] | null> | null; // [endorse]
     getEndorsementSpecificStatus: Array<NexusGenRootTypes['endorsement'] | null> | null; // [endorsement]
-    getEndorsmentByCSV: Array<NexusGenRootTypes['endorsement'] | null> | null; // [endorsement]
     getFindMyLocation: Array<NexusGenRootTypes['jobDetails'] | null> | null; // [jobDetails]
+    getGroubyByJob: Array<NexusGenRootTypes['countByGroup'] | null> | null; // [countByGroup]
     getJobByStatus: Array<NexusGenRootTypes['JobPost'] | null> | null; // [JobPost]
     getJobPostById: Array<NexusGenRootTypes['JobPost'] | null> | null; // [JobPost]
+    getJobPostDWMY: Array<NexusGenRootTypes['countByGroup'] | null> | null; // [countByGroup]
     getJobPostSearch: Array<NexusGenRootTypes['JobPost'] | null> | null; // [JobPost]
+    getJobRelated: Array<NexusGenRootTypes['jobDetails'] | null> | null; // [jobDetails]
     getNotificationByStatus: Array<NexusGenRootTypes['notification'] | null> | null; // [notification]
     getNotificationID: Array<NexusGenRootTypes['notification'] | null> | null; // [notification]
+    getSpecificJob: Array<NexusGenRootTypes['jobDetails'] | null> | null; // [jobDetails]
     getUserByID: Array<NexusGenRootTypes['user'] | null> | null; // [user]
     getUserByRoles: Array<NexusGenRootTypes['user'] | null> | null; // [user]
     getUserLogs: Array<NexusGenRootTypes['logs'] | null> | null; // [logs]
@@ -359,6 +374,10 @@ export interface NexusGenFieldTypes {
     mission: string | null; // String
     vission: string | null; // String
   }
+  countByGroup: { // field return type
+    _count: number | null; // Int
+    createdAt: NexusGenScalars['Date'] | null; // Date
+  }
   endorse: { // field return type
     company: Array<NexusGenRootTypes['company'] | null> | null; // [company]
     createdAt: NexusGenScalars['Date'] | null; // Date
@@ -370,13 +389,12 @@ export interface NexusGenFieldTypes {
   }
   endorsement: { // field return type
     Status: string | null; // String
+    applicants: Array<NexusGenRootTypes['application'] | null> | null; // [application]
     createdAt: NexusGenScalars['Date'] | null; // Date
-    email: NexusGenScalars['EmailAddress'] | null; // EmailAddress
     endorse: Array<NexusGenRootTypes['endorse'] | null> | null; // [endorse]
     endorseBy: Array<NexusGenRootTypes['user'] | null> | null; // [user]
     endorsementComment: Array<NexusGenRootTypes['comment'] | null> | null; // [comment]
     endorsementID: string | null; // ID
-    profile: Array<NexusGenRootTypes['profile'] | null> | null; // [profile]
     updatedAt: NexusGenScalars['Date'] | null; // Date
   }
   feedback: { // field return type
@@ -420,7 +438,9 @@ export interface NexusGenFieldTypes {
     notificationID: string | null; // ID
     notificationJob: Array<NexusGenRootTypes['JobPost'] | null> | null; // [JobPost]
     notificationStatus: string | null; // String
+    title: string | null; // String
     user: Array<NexusGenRootTypes['user'] | null> | null; // [user]
+    userApplications: Array<NexusGenRootTypes['application'] | null> | null; // [application]
   }
   profile: { // field return type
     birthday: NexusGenScalars['Date'] | null; // Date
@@ -450,6 +470,7 @@ export interface NexusGenFieldTypes {
 
 export interface NexusGenFieldTypeNames {
   JobPost: { // field return type name
+    _count: 'Int'
     applicants: 'application'
     createdAt: 'Date'
     description: 'String'
@@ -473,7 +494,6 @@ export interface NexusGenFieldTypeNames {
     createComment: 'comment'
     createEmployer: 'user'
     createEndorse: 'endorse'
-    createEndorsement: 'endorsement'
     createInterviewer: 'interviewer'
     deleteCompany: 'company'
     deleteEndorsement: 'endorsement'
@@ -495,35 +515,45 @@ export interface NexusGenFieldTypeNames {
     updatePassword: 'user'
     updateProfile: 'profile'
     updateUserPassword: 'user'
-    viewMyApplication: 'application'
+    viewMyApplication: 'token'
   }
   Query: { // field return type name
     getAddressQuery: 'address'
     getAllApplication: 'application'
+    getAllApplicationDateCount: 'countByGroup'
     getAllCompany: 'company'
+    getAllCountJob: 'JobPost'
     getAllEndorse: 'endorse'
+    getAllEndorsementByGroup: 'countByGroup'
     getAllFeedback: 'feedback'
     getAllJobPost: 'JobPost'
     getAllNotification: 'notification'
     getAllUser: 'user'
+    getApplicantByDWMY: 'countByGroup'
     getApplicantByID: 'application'
     getApplicationByStatus: 'application'
     getCompanyById: 'company'
+    getCompanyPartner: 'company'
     getEmployerCompany: 'company'
+    getEmployerCompanyGroup: 'countByGroup'
     getEndorseByID: 'endorse'
     getEndorseByStatus: 'endorse'
     getEndorsementAll: 'endorsement'
+    getEndorsementByDWMY: 'countByGroup'
     getEndorsementById: 'endorsement'
     getEndorsementCommnet: 'comment'
     getEndorsementFeedback: 'endorse'
     getEndorsementSpecificStatus: 'endorsement'
-    getEndorsmentByCSV: 'endorsement'
     getFindMyLocation: 'jobDetails'
+    getGroubyByJob: 'countByGroup'
     getJobByStatus: 'JobPost'
     getJobPostById: 'JobPost'
+    getJobPostDWMY: 'countByGroup'
     getJobPostSearch: 'JobPost'
+    getJobRelated: 'jobDetails'
     getNotificationByStatus: 'notification'
     getNotificationID: 'notification'
+    getSpecificJob: 'jobDetails'
     getUserByID: 'user'
     getUserByRoles: 'user'
     getUserLogs: 'logs'
@@ -578,6 +608,10 @@ export interface NexusGenFieldTypeNames {
     mission: 'String'
     vission: 'String'
   }
+  countByGroup: { // field return type name
+    _count: 'Int'
+    createdAt: 'Date'
+  }
   endorse: { // field return type name
     company: 'company'
     createdAt: 'Date'
@@ -589,13 +623,12 @@ export interface NexusGenFieldTypeNames {
   }
   endorsement: { // field return type name
     Status: 'String'
+    applicants: 'application'
     createdAt: 'Date'
-    email: 'EmailAddress'
     endorse: 'endorse'
     endorseBy: 'user'
     endorsementComment: 'comment'
     endorsementID: 'ID'
-    profile: 'profile'
     updatedAt: 'Date'
   }
   feedback: { // field return type name
@@ -639,7 +672,9 @@ export interface NexusGenFieldTypeNames {
     notificationID: 'ID'
     notificationJob: 'JobPost'
     notificationStatus: 'String'
+    title: 'String'
     user: 'user'
+    userApplications: 'application'
   }
   profile: { // field return type name
     birthday: 'Date'
@@ -721,12 +756,6 @@ export interface NexusGenArgTypes {
       endorsementID: string; // ID!
       userID: string; // ID!
     }
-    createEndorsement: { // args
-      Address?: NexusGenInputs['AddressInput'] | null; // AddressInput
-      Profile?: NexusGenInputs['ProfileInput'] | null; // ProfileInput
-      email: NexusGenScalars['EmailAddress']; // EmailAddress!
-      userID: string; // ID!
-    }
     createInterviewer: { // args
       applicantID: string; // ID!
       userID: string; // ID!
@@ -745,8 +774,7 @@ export interface NexusGenArgTypes {
     }
     generateApplicantCSV: { // args
       end: string; // String!
-      limit: number; // Int!
-      order: NexusGenEnums['orderedBy']; // orderedBy!
+      order: string; // String!
       start: string; // String!
       status: string; // String!
     }
@@ -777,6 +805,7 @@ export interface NexusGenArgTypes {
     updateApplicantStatus: { // args
       applicantID: string; // ID!
       status: string; // String!
+      userID: string; // ID!
     }
     updateComment: { // args
       comment?: NexusGenInputs['commentInput'] | null; // commentInput
@@ -788,6 +817,7 @@ export interface NexusGenArgTypes {
     updateEndorse: { // args
       endorseID: string; // ID!
       endorseStatus: string; // String!
+      userID: string; // ID!
     }
     updateEndorsement: { // args
       Status: string; // String!
@@ -815,11 +845,19 @@ export interface NexusGenArgTypes {
       userID: string; // ID!
     }
     viewMyApplication: { // args
-      email?: NexusGenScalars['EmailAddress'] | null; // EmailAddress
+      email: NexusGenScalars['EmailAddress']; // EmailAddress!
       id: string; // String!
     }
   }
   Query: {
+    getAllJobPost: { // args
+      limit: number; // Int!
+      offset: number; // Int!
+      order: NexusGenEnums['orderedBy']; // orderedBy!
+    }
+    getApplicantByDWMY: { // args
+      select: string; // String!
+    }
     getApplicantByID: { // args
       applicationID: string; // ID!
     }
@@ -845,6 +883,9 @@ export interface NexusGenArgTypes {
       status: string; // String!
       userID: string; // ID!
     }
+    getEndorsementByDWMY: { // args
+      select: string; // String!
+    }
     getEndorsementById: { // args
       endorsementID: string; // ID!
     }
@@ -860,12 +901,6 @@ export interface NexusGenArgTypes {
       order?: NexusGenEnums['orderedBy'] | null; // orderedBy
       status: string; // String!
     }
-    getEndorsmentByCSV: { // args
-      end: string; // String!
-      order?: NexusGenEnums['orderedBy'] | null; // orderedBy
-      start: string; // String!
-      status: string; // String!
-    }
     getFindMyLocation: { // args
       location?: string | null; // String
     }
@@ -878,11 +913,26 @@ export interface NexusGenArgTypes {
     getJobPostById: { // args
       jobPostID: string; // ID!
     }
+    getJobPostDWMY: { // args
+      select: string; // String!
+    }
     getJobPostSearch: { // args
       search: string; // String!
     }
+    getJobRelated: { // args
+      category: string; // String!
+      limit: number; // Int!
+      offset: number; // Int!
+    }
     getNotificationID: { // args
       notificationID: string; // ID!
+    }
+    getSpecificJob: { // args
+      category?: string | null; // String
+      jobType?: Array<string | null> | null; // [String]
+      limit: number; // Int!
+      offset: number; // Int!
+      workType?: Array<string | null> | null; // [String]
     }
     getUserByID: { // args
       userID: string; // ID!

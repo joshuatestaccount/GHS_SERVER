@@ -5,6 +5,7 @@ export const notificationObject = objectType({
     name: "notification",
     definition(t) {
         t.id("notificationID");
+        t.string("title");
         t.string("notificationStatus");
         t.date("createdAt");
         t.list.field("user", {
@@ -17,6 +18,16 @@ export const notificationObject = objectType({
                                 notificationID: parent.notificationID
                             }
                         }
+                    }
+                })
+            }
+        })
+        t.list.field("userApplications", {
+            type: "application",
+            resolve: async (parent): Promise<any> => {
+                return await prisma.applicant.findMany({
+                    where: {
+                        notificaitonID: parent.notificationID
                     }
                 })
             }

@@ -15,6 +15,13 @@ export const jobMutation = extendType({
                 const token = req.cookies[ "ghs_access_token" ];
                 const { role } = verify(token, "HeadStart") as JwtPayload
                 if (userID && role === "recruiter") {
+
+                    const user = await prisma.user.findUnique({
+                        where: { userID },
+                        include: {
+                            Profile: true
+                        }
+                    })
                     return await prisma.$transaction(async () => {
                         const adminID = await prisma.user.findUnique({
                             where: {
@@ -56,7 +63,7 @@ export const jobMutation = extendType({
                         })
                         const notifSub = await prisma.notification.create({
                             data: {
-
+                                title: "New Job Post",
                                 createdAt: Dates,
                                 JobPost: {
                                     connect: {
@@ -70,10 +77,27 @@ export const jobMutation = extendType({
                                 }
                             }
                         })
+
+                        await prisma.logs.create({
+                            data: {
+                                title: "Create Job Post",
+                                modifiedBy: `${user.Profile.firstname} ${user.Profile.lastname}`,
+                                createdAt: Dates,
+                                User: {
+                                    connect: {
+                                        userID
+                                    }
+                                }
+                            }
+                        })
                         pubsub.publish("createJobPostSub", jobPost)
                         pubsub.publish("createNotificationSub", notifSub)
+
+
                         return jobPost
                     })
+
+
                 } else {
                     throw new GraphQLError("Your are required to sign in.")
                 }
@@ -90,47 +114,74 @@ export const jobMutation = extendType({
                 const token = req.cookies[ "ghs_access_token" ];
                 const { userID: userids, role } = verify(token, "HeadStart") as JwtPayload
                 if (userID === userids && role === "administrator" || "moderator") {
-                    const adminID = await prisma.user.findUnique({
-                        where: {
-                            userID
-                        },
-                        include: {
-                            Company: true
-                        }
-                    })
-                    const AMMPost = await prisma.jobPost.create({
-                        data: {
-                            title,
-                            description,
-                            qualification,
-                            responsibilities,
-                            status: "approved",
-                            createdAt: Dates,
-                            updatedAt: Dates,
-                            Company: {
-                                connect: {
-                                    companyID: adminID.companyID
-                                }
-                            },
-                            User: {
-                                connect: {
-                                    userID
-                                }
-                            },
-                            details: {
-                                create: {
-                                    salary,
-                                    jobType,
-                                    location,
-                                    category,
-                                    workType
+
+                    return await prisma.$transaction(async () => {
+                        const user = await prisma.user.findUnique({
+                            where: { userID },
+                            include: {
+                                Profile: true
+                            }
+                        })
+
+                        await prisma.logs.create({
+                            data: {
+                                title: "Create Job Post",
+                                modifiedBy: `${user.Profile.firstname} ${user.Profile.lastname}`,
+                                createdAt: Dates,
+                                User: {
+                                    connect: {
+                                        userID
+                                    }
                                 }
                             }
-                        }
-                    })
-                    pubsub.publish("createJobPostSub", AMMPost)
+                        })
 
-                    return AMMPost
+                        const adminID = await prisma.user.findUnique({
+                            where: {
+                                userID
+                            },
+                            include: {
+                                Company: true
+                            }
+                        })
+                        const AMMPost = await prisma.jobPost.create({
+                            data: {
+                                title,
+                                description,
+                                qualification,
+                                responsibilities,
+                                status: "approved",
+                                createdAt: Dates,
+                                updatedAt: Dates,
+                                Company: {
+                                    connect: {
+                                        companyID: adminID.companyID
+                                    }
+                                },
+                                User: {
+                                    connect: {
+                                        userID
+                                    }
+                                },
+                                details: {
+                                    create: {
+                                        salary,
+                                        jobType,
+                                        location,
+                                        category,
+                                        workType
+                                    }
+                                }
+                            }
+                        })
+                        pubsub.publish("createJobPostSub", AMMPost)
+
+
+
+
+                        return AMMPost
+                    })
+
                 } else {
                     throw new GraphQLError("Your are required to sign in.")
                 }
@@ -145,6 +196,15 @@ export const jobMutation = extendType({
                 const { userID, role } = verify(token, "HeadStart") as JwtPayload
                 if (userID && role === "administrator") {
                     return await prisma.$transaction(async () => {
+
+                        const user = await prisma.user.findUnique({
+                            where: { userID },
+                            include: {
+                                Profile: true
+                            }
+                        })
+
+
                         const post = await prisma.jobPost.update({
                             data: {
                                 status
@@ -166,6 +226,20 @@ export const jobMutation = extendType({
                             }
                         })
 
+
+
+                        await prisma.logs.create({
+                            data: {
+                                title: "Update Job Post Status",
+                                modifiedBy: `${user.Profile.firstname} ${user.Profile.lastname}`,
+                                createdAt: Dates,
+                                User: {
+                                    connect: {
+                                        userID
+                                    }
+                                }
+                            }
+                        })
                         return post
                     })
                 }
@@ -183,7 +257,15 @@ export const jobMutation = extendType({
                 const token = req.cookies[ "ghs_access_token" ];
                 const { userID, role } = verify(token, "HeadStart") as JwtPayload
                 if (userID && role === "administrator" || "recruiter") {
-                    return await prisma.jobPost.update({
+
+                    const user = await prisma.user.findUnique({
+                        where: { userID },
+                        include: {
+                            Profile: true
+                        }
+                    })
+
+                    const post = await prisma.jobPost.update({
                         data: {
                             description, qualification, responsibilities, title,
                             updatedAt: Dates,
@@ -197,6 +279,21 @@ export const jobMutation = extendType({
                             jobPostID
                         }
                     })
+                    await prisma.logs.create({
+                        data: {
+                            title: "Update Job Post",
+                            modifiedBy: `${user.Profile.firstname} ${user.Profile.lastname}`,
+                            createdAt: Dates,
+                            User: {
+                                connect: {
+                                    userID
+                                }
+                            }
+                        }
+                    })
+
+                    return post
+
                 }
 
             }

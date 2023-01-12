@@ -1,8 +1,6 @@
 import { extendType, idArg, intArg, nonNull } from 'nexus'
 import { prisma } from '../../../../server.js'
 
-
-
 export const LogsQuery = extendType({
     type: "Query",
     definition(t) {

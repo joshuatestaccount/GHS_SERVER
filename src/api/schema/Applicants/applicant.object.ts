@@ -66,3 +66,11 @@ export const applicationObject = objectType({
         })
     }
 })
+
+export const countApplicatinObject = objectType({
+    name: "countByGroup", 
+    definition(t) {
+        t.date("createdAt");
+        t.int("_count")
+    },
+})

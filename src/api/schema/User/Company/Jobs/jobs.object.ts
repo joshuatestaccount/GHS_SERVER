@@ -33,6 +33,7 @@ export const jobObject = objectType({
         t.string("status");
         t.date("createdAt");
         t.date("updatedAt");
+        t.int("_count")
         t.list.field("users", {
             type: "user",
             resolve: async (parent): Promise<any> => {

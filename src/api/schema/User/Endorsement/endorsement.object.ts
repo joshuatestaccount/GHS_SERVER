@@ -7,14 +7,13 @@ export const endorsementObject = objectType({
     name: "endorsement",
     definition(t) {
         t.id('endorsementID');
-        t.email("email");
         t.string("Status");
         t.date("createdAt");
         t.date("updatedAt");
-        t.list.field("profile", {
-            type: "profile",
+        t.list.field("applicants", {
+            type: "application",
             resolve: async (parent): Promise<any> => {
-                return await prisma.profile.findMany({
+                return await prisma.applicant.findMany({
                     where: {
                         endorsementID: parent.endorsementID
                     }

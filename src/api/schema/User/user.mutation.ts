@@ -133,6 +133,9 @@ export const userMutation = extendType({
                 const user = await prisma.user.findUnique({
                     where: {
                         email
+                    },
+                    include: {
+                        Profile: true
                     }
                 })
 
@@ -158,7 +161,19 @@ export const userMutation = extendType({
                     secure: true
                 })
 
-                res.cookie("ghs-refresh_token", token, { httpOnly: false, sameSite: "none", secure: true })
+
+                await prisma.logs.create({
+                    data: {
+                        title: "Logged in",
+                        modifiedBy: `${user.Profile.firstname} ${user.Profile.lastname}`,
+                        User: {
+                            connect: {
+                                userID: user.userID
+                            }
+                        },
+                        createdAt: Dates,
+                    }
+                })
 
                 return { token }
             }
@@ -228,7 +243,6 @@ export const userMutation = extendType({
                             data: {
                                 title: "Changed Password",
                                 modifiedBy: `${findUser.Profile.firstname} ${findUser.Profile.lastname}`,
-                                updatedAt: Dates,
                                 createdAt: Dates,
                                 User: {
                                     connect: {
@@ -269,14 +283,31 @@ export const userMutation = extendType({
             resolve: async (_, { password, retype, userID }): Promise<any> => {
                 if (password !== retype) throw new GraphQLError("Password is not Matched")
                 const pass = await bcrypt.hash(password, 12);
-                return await prisma.user.update({
+                const user=  await prisma.user.update({
                     data: {
                         password: pass
                     },
                     where: {
                         userID
+                    },
+                    include: {
+                        Profile: true
                     }
                 })
+
+                await prisma.logs.create({
+                    data: {
+                        title: "Password Changed",
+                        createdAt: Dates,
+                        modifiedBy: `${user.Profile.firstname} ${user.Profile.lastname}`,
+                        User: {
+                            connect: {
+                                userID
+                            }
+                        }
+                    }
+                })
+                return user
             }
         })
         t.field("deleteUser", {

@@ -10,12 +10,7 @@ export const notificationQuery = extendType({
             resolve: async (): Promise<any> => {
                 return await prisma.notification.findMany({
                     where: {
-                        AND: {
-                            JobPost: {
-                                status: "inProgress"
-                            },
-                            notificationStatus: "unread"
-                        }
+                        notificationStatus: "unread"
                     }
                 })
             }
@@ -23,11 +18,7 @@ export const notificationQuery = extendType({
         t.list.field("getAllNotification", {
             type: "notification",
             resolve: async (): Promise<any> => {
-                return await prisma.notification.findMany({
-                    where: {
-                        notificationStatus: "unread"
-                    }
-                })
+                return await prisma.notification.findMany()
             }
         })
         t.list.field("getNotificationID", {

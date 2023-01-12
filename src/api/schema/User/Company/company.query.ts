@@ -27,6 +27,41 @@ export const companyQuery = extendType({
                 })
             }
         })
+        t.list.field("getEmployerCompanyGroup", {
+            type: "countByGroup",
+            resolve: async (): Promise<any> => {
+                const company = await prisma.company.groupBy({
+                    where: {
+                        User: {
+                            some: {
+                                role: "employer"
+                            }
+                        }
+                    },
+                    by: ['createdAt'],
+                    _count: {
+                        companyID: true
+                    }
+                })
+                return company.map(({_count, createdAt}) => {
+                    return { _count: _count.companyID, createdAt: createdAt }
+                })
+            }
+        })
+        t.list.field("getCompanyPartner", {
+            type: "company",
+            resolve: async(): Promise<any> => {
+                return await prisma.company.findMany({
+                    where: {
+                        User: {
+                            some: {
+                                role: "employer"
+                            }
+                        }
+                    }
+                })
+            }
+        })
         t.list.field("getCompanyById", {
             type: "company",
             args: { companyID: nonNull(idArg()) },

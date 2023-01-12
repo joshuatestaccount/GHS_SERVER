@@ -23,6 +23,24 @@ export const endorsementQuery = extendType({
                 })
             }
         })
+        t.list.field("getAllEndorsementByGroup", {
+            type: "countByGroup",
+            resolve: async (): Promise<any> => {
+                const endorsement = await prisma.endorsement.groupBy({
+                    by: [ "createdAt" ],
+                    _count: {
+                        endorsementID: true
+                    },
+                    orderBy: {
+                        createdAt: "asc"
+                    }
+                })
+
+                return endorsement.map(({ _count, createdAt }) => {
+                    return { _count: _count.endorsementID, createdAt: createdAt }
+                })
+            }
+        })
         t.list.field("getEndorsementSpecificStatus", {
             type: "endorsement",
             args: {
@@ -41,14 +59,19 @@ export const endorsementQuery = extendType({
                 })
             }
         })
-        t.list.field("getEndorsmentByCSV", {
-            type: "endorsement",
-            args: { status: nonNull(stringArg()), start: nonNull(stringArg()), end: nonNull(stringArg()), order: "orderedBy" },
-            resolve: async (_, { status, start, end, order }): Promise<any> => {
-                return await prisma.$queryRawUnsafe(`SELECT * FROM PUBLIC."Endorsement" 
-                where "Status" = '${status}' AND "createdAt" between '${start}'
-                AND '${end}'
-                ORDER by public."Endorsement"."createdAt" ${order}`)
+        t.list.field("getEndorsementByDWMY", {
+            type: "countByGroup",
+            args: { select: nonNull(stringArg()) },
+            resolve: async (_, { select }): Promise<any> => {
+                const endorsement = await prisma.$queryRawUnsafe(`SELECT DATE_TRUNC('${select}', "createdAt" ) AS "createdAt", 
+                COUNT("endorsementID") AS count FROM public."Endorsement"
+                GROUP BY DATE_TRUNC('${select}', "createdAt")
+                ORDER BY "createdAt" ASC
+                `)
+
+                return endorsement.map(({ count, createdAt }) => {
+                    return { _count: parseInt(count), createdAt: createdAt }
+                })
             }
         })
     }

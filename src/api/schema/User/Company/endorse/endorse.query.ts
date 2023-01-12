@@ -34,11 +34,6 @@ export const endorQuery = extendType({
 
                     },
                     take: limit,
-                    orderBy: {
-                        Endorsement: {
-
-                        }
-                    },
                     skip: offset
                 })
             }
@@ -60,7 +55,11 @@ export const endorQuery = extendType({
             resolve: async (_, { endorsementID }): Promise<any> => {
                 return await prisma.endorse.findMany({
                     where: {
-                        endorsementID
+                        Endorsement: {
+                            some: {
+                                endorsementID
+                            }
+                        }
                     }
                 })
             }

@@ -32,33 +32,32 @@ model Logs {
   logsID     String   @id @default(cuid())
   title      String
   modifiedBy String
-  createdAt  DateTime @db.Date
-  updatedAt  DateTime @db.Date
+  createdAt  DateTime @db.Timestamp()
   User       User[]
 }
 
 model Notification {
   notificationID     String             @id @default(cuid())
+  title              String
   notificationStatus notificationStatus @default(unread)
   createdAt          DateTime           @db.Date
   userID             String?
   User               User?              @relation(fields: [userID], references: [userID], onDelete: Cascade)
   JobPost            JobPost?
+  Applicant          Applicant?
 }
 
 model Profile {
-  profileID     String       @id @default(cuid())
-  firstname     String
-  lastname      String
-  phone         String
-  birthday      DateTime?    @db.Date
-  endorsementID String?      @unique
-  applicantID   String?      @unique
-  userID        String?      @unique
-  Applicant     Applicant?   @relation(fields: [applicantID], references: [applicantID], onDelete: Cascade)
-  Endorsement   Endorsement? @relation(fields: [endorsementID], references: [endorsementID], onDelete: Cascade)
-  User          User?        @relation(fields: [userID], references: [userID], onDelete: Cascade)
-  Address       Address?
+  profileID   String     @id @default(cuid())
+  firstname   String
+  lastname    String
+  phone       String
+  birthday    DateTime?  @db.Date
+  applicantID String?    @unique
+  userID      String?    @unique
+  Applicant   Applicant? @relation(fields: [applicantID], references: [applicantID], onDelete: Cascade)
+  User        User?      @relation(fields: [userID], references: [userID], onDelete: Cascade)
+  Address     Address?
 }
 
 model Address {
@@ -77,6 +76,7 @@ model Company {
   companyID   String          @id @default(cuid())
   companyName String
   details     CompanyDetails?
+  createdAt   DateTime?
   Endorse     Endorse[]
   Endorsement Endorsement[]
   jobPost     JobPost[]
@@ -106,18 +106,17 @@ model Comment {
 }
 
 model Endorsement {
-  endorsementID String    @id @default(cuid())
-  email         String
+  endorsementID String      @id @default(cuid())
   Status        String
-  createdAt     DateTime  @db.Date
-  updatedAt     DateTime  @db.Date
+  createdAt     DateTime    @db.Date
+  updatedAt     DateTime    @db.Date
   userID        String?
   companyID     String?
-  Company       Company?  @relation(fields: [companyID], references: [companyID])
-  User          User?     @relation(fields: [userID], references: [userID], onDelete: Cascade)
+  Company       Company?    @relation(fields: [companyID], references: [companyID])
+  User          User?       @relation(fields: [userID], references: [userID], onDelete: Cascade)
   Comment       Comment?
   Endorse       Endorse[]
-  Profile       Profile?
+  Applicant     Applicant[]
 }
 
 model Endorse {
@@ -129,8 +128,7 @@ model Endorse {
   feedback      Feedback?
   Company       Company?      @relation(fields: [companyID], references: [companyID])
   companyID     String?
-  Endorsement   Endorsement?  @relation(fields: [endorsementID], references: [endorsementID])
-  endorsementID String?
+  Endorsement   Endorsement[]
 }
 
 model Feedback {
@@ -152,18 +150,22 @@ model Interviewer {
 }
 
 model Applicant {
-  applicantID   String          @id @default(uuid())
-  id            String
-  email         String
-  createdAt     DateTime        @db.Date
-  updatedAt     DateTime        @db.Date
-  status        applicantStatus @default(waiting)
-  jobPostID     String
-  interviewerID String?         @unique
-  interviewer   Interviewer?    @relation(fields: [interviewerID], references: [interviewerID])
-  JobPost       JobPost         @relation(fields: [jobPostID], references: [jobPostID], onDelete: Cascade)
-  Profile       Profile?
-  FileUpload    UploadFile?
+  applicantID    String          @id @default(uuid())
+  id             String
+  email          String
+  createdAt      DateTime        @db.Date
+  updatedAt      DateTime        @db.Date
+  status         applicantStatus @default(waiting)
+  jobPostID      String
+  interviewerID  String?         @unique
+  interviewer    Interviewer?    @relation(fields: [interviewerID], references: [interviewerID])
+  JobPost        JobPost         @relation(fields: [jobPostID], references: [jobPostID], onDelete: Cascade)
+  Endorsement    Endorsement?    @relation(fields: [endorsementID], references: [endorsementID], onDelete: Cascade)
+  endorsementID  String?
+  Profile        Profile?
+  FileUpload     UploadFile?
+  Notification   Notification?   @relation(fields: [notificaitonID], references: [notificationID])
+  notificaitonID String?         @unique
 }
 
 model UploadFile {
