@@ -4,6 +4,7 @@ import { prisma, pubsub } from '../../../server.js'
 import signature, { JwtPayload } from 'jsonwebtoken'
 import { GraphQLError } from 'graphql'
 import { Dates } from '../../helpers/dateFormat.js'
+import { GESend } from '../../helpers/email.js'
 
 const { sign, verify } = signature
 
@@ -58,9 +59,9 @@ export const userMutation = extendType({
         t.field("createAccount", {
             type: "user",
             args: {
-                auth: "AuthInput", role: nonNull("roles"), Profile: "ProfileInput"
+                auth: "AuthInput", role: nonNull(stringArg()), Profile: "ProfileInput", companyName: stringArg()
             },
-            resolve: async (_, { auth: { email, password }, Profile: { firstname, lastname, birthday, phone }, role }, { req }): Promise<any> => {
+            resolve: async (_, { auth: { email, password }, Profile: { firstname, lastname, birthday, phone }, role, companyName }, { req }): Promise<any> => {
                 const token = req.cookies[ "ghs_access_token" ];
                 const { userID, role: roles } = verify(token, "HeadStart") as JwtPayload
                 if (userID && roles === "administrator") {
@@ -73,59 +74,46 @@ export const userMutation = extendType({
                             Company: true
                         }
                     })
-                    return await prisma.user.create({
-                        data: {
-                            email, password: pass, role,
-                            Profile: {
-                                create: {
-                                    firstname, lastname, birthday, phone
-                                }
-                            },
-                            Company: {
-                                connect: {
-                                    companyID: users.companyID
-                                }
-                            },
+                    if (role === "employer") {
+                        return await prisma.user.create({
+                            data: {
+                                email, password: pass, role: role as any,
+                                Profile: {
+                                    create: {
+                                        firstname, lastname, birthday, phone
+                                    }
+                                },
+                                Company: {
+                                    create: {
+                                        companyName
+                                    }
+                                },
 
-                            createdAt: Dates, updatedAt: Dates,
-                        }
-                    })
-                }
-
-
-
-
-
-            }
-        })
-
-        t.field("createEmployer", {
-            type: "user",
-            args: { profile: "ProfileInput", auth: nonNull("AuthInput"), companyName: nonNull(stringArg()) },
-            resolve: async (_, { profile: { firstname, lastname, birthday, phone }, auth: { email, password }, companyName }): Promise<any> => {
-                const pass = await bcrypt.hash(password, 12)
-                return await prisma.user.create({
-                    data: {
-                        email, password: pass,
-                        Profile: {
-                            create: {
-                                firstname, lastname, birthday, phone
+                                createdAt: Dates, updatedAt: Dates,
                             }
-                        },
-                        createdAt: Dates,
-                        updatedAt: Dates,
-                        role: "employer",
-                        Company: {
-                            create: {
-                                companyName
+                        })
+                    } else {
+                        return await prisma.user.create({
+                            data: {
+                                email, password: pass, role: role as any,
+                                Profile: {
+                                    create: {
+                                        firstname, lastname, birthday, phone
+                                    }
+                                },
+                                Company: {
+                                    connect: {
+                                        companyID: users.companyID
+                                    }
+                                },
+
+                                createdAt: Dates, updatedAt: Dates,
                             }
-                        }
+                        })
                     }
-                })
+                }
             }
-
         })
-
         t.field("login", {
             type: "token",
             args: { Auth: "AuthInput" },
@@ -239,6 +227,9 @@ export const userMutation = extendType({
                                 updatedAt: Dates
                             }
                         })
+
+                        GESend(userPass.email, "Your password has been reset. Your initial password is your birthday. Format example YYYYMMDD ", "Changed Password")
+
                         await prisma.logs.create({
                             data: {
                                 title: "Changed Password",
@@ -283,7 +274,7 @@ export const userMutation = extendType({
             resolve: async (_, { password, retype, userID }): Promise<any> => {
                 if (password !== retype) throw new GraphQLError("Password is not Matched")
                 const pass = await bcrypt.hash(password, 12);
-                const user=  await prisma.user.update({
+                const user = await prisma.user.update({
                     data: {
                         password: pass
                     },
@@ -297,7 +288,7 @@ export const userMutation = extendType({
 
                 await prisma.logs.create({
                     data: {
-                        title: "Password Changed",
+                        title: "You Changed your password",
                         createdAt: Dates,
                         modifiedBy: `${user.Profile.firstname} ${user.Profile.lastname}`,
                         User: {

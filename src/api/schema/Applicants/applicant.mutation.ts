@@ -1,5 +1,5 @@
 import { GraphQLError } from 'graphql'
-import { extendType, idArg, intArg, nonNull, stringArg } from 'nexus'
+import { extendType, idArg, nonNull, stringArg } from 'nexus'
 import { prisma } from '../../../server.js'
 import { AWSFileUpload, AWSVideoUpload } from '../../helpers/awsFileUpload.js'
 import { Dates } from '../../helpers/dateFormat.js'
@@ -166,31 +166,25 @@ export const applicaitonMutation = extendType({
             type: "token",
             args: { id: nonNull(stringArg()), email: nonNull("EmailAddress") },
             resolve: async (_, { email, id }, { res }): Promise<any> => {
-                const user = await prisma.user.findMany({
-                    where: {
-                        email
-                    }
-                })
 
-                const findId = await prisma.applicant.findFirst({
+                const findId = await prisma.applicant.findUnique({
                     where: {
                         id
                     }
                 })
-                if (!user) throw new GraphQLError("No email existing");
-                if (!findId.id) throw new GraphQLError("Invalid credentials");
 
+                if (!findId) throw new GraphQLError("Applicant No. is invalid")
 
                 const token = sign({ applicantID: findId.id }, "HeadStart", {
                     algorithm: "HS512",
-                    expiresIn: "7d",
+                    expiresIn: "1d",
                     noTimestamp: false
                 })
 
                 const app = await prisma.applicant.findFirst({
                     where: {
                         AND: {
-                            id,
+                            id: findId.id,
                             email: {
                                 equals: email
                             }
@@ -205,7 +199,7 @@ export const applicaitonMutation = extendType({
                     secure: true
                 })
 
-                if (!app) throw new GraphQLError("No Application exist")
+                if (!app) throw new GraphQLError("Invalid Email Address")
 
                 return { token }
             }

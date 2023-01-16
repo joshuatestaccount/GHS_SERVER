@@ -53,14 +53,13 @@ input JobPostInput {
 
 type Mutation {
   changeEmailAddress(email: EmailAddress!, retype: EmailAddress, userID: ID!): user
-  createAFeedback(endorseID: ID!, feedback: String!, userID: ID!): feedback
+  createAFeedback(applicantID: ID!, endorseID: ID!, feedback: String!, userID: ID!): feedback
   createAJobForAMM(JobDetails: jobDetailsInput, JobPost: JobPostInput, userID: ID!): JobPost
   createAJobForRecruiter(JobDetails: jobDetailsInput, JobPost: JobPostInput, userID: ID!): JobPost
-  createAccount(Profile: ProfileInput, auth: AuthInput, role: roles!): user
+  createAccount(Profile: ProfileInput, auth: AuthInput, companyName: String, role: String!): user
   createAdministrator(Auth: AuthInput, Profile: ProfileInput, companyName: String!): user
   createApplication(Address: AddressInput, Profile: ProfileInput, email: EmailAddress!, file: Upload, jobPostID: ID!, video: Upload): application
   createComment(comments: commentInput, endorsementID: ID!): comment
-  createEmployer(auth: AuthInput!, companyName: String!, profile: ProfileInput): user
   createEndorse(companyID: ID!, endorsementID: ID!, userID: ID!): endorse
   createInterviewer(applicantID: ID!, userID: ID!): interviewer
   deleteCompany(companyID: ID!): company
@@ -69,6 +68,7 @@ type Mutation {
   deleteUser(userID: ID!): user
   generateApplicantCSV(end: String!, order: String!, start: String!, status: String!): [application]
   getDetailsFitlerAndSorting(category: String, jobType: String, location: String, workType: String): [jobDetails]
+  getEndorseByCSV(end: String!, orders: orderedBy!, start: String!, status: String!, userID: ID): [company]
   getEndorsmentByCSV(end: String!, order: orderedBy, start: String!, status: String!): [endorsement]
   login(Auth: AuthInput): token
   updateAddressByProfileID(Address: AddressInput, profileID: ID!): [address]
@@ -169,6 +169,7 @@ type application {
   applyJobPost: [JobPost]
   createdAt: Date
   email: EmailAddress
+  endorseFeedback: [feedback]
   id: String
   status: String
   updatedAt: Date

@@ -9,14 +9,19 @@ export const feedbackMutation = extendType({
     definition(t) {
         t.field("createAFeedback", {
             type: "feedback",
-            args: { feedback: nonNull(stringArg()), userID: nonNull(idArg()), endorseID: nonNull(idArg()) },
-            resolve: async (_, { feedback, endorseID, userID }): Promise<any> => {
+            args: { feedback: nonNull(stringArg()), userID: nonNull(idArg()), applicantID: nonNull(idArg()), endorseID: nonNull(idArg()) },
+            resolve: async (_, { feedback, endorseID, userID, applicantID }): Promise<any> => {
                 return await prisma.feedback.create({
                     data: {
                         feedback,
                         Endorse: {
                             connect: {
                                 endorseID
+                            }
+                        },
+                        Applicant: {
+                            connect: {
+                                applicantID
                             }
                         },
                         User: {

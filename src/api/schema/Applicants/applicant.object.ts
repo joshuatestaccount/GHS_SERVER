@@ -64,11 +64,23 @@ export const applicationObject = objectType({
                 })
             }
         })
+        t.list.field("endorseFeedback", {
+            type: "feedback",
+            resolve: async (parent): Promise<any> => {
+                return await prisma.feedback.findMany({
+                    where: {
+                        Applicant: {
+                            applicantID: parent.applicantID
+                        }
+                    }
+                })
+            }
+        })
     }
 })
 
 export const countApplicatinObject = objectType({
-    name: "countByGroup", 
+    name: "countByGroup",
     definition(t) {
         t.date("createdAt");
         t.int("_count")

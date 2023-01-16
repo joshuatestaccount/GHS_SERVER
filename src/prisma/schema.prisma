@@ -125,20 +125,22 @@ model Endorse {
   userID        String
   createdAt     DateTime      @db.Date
   User          User          @relation(fields: [userID], references: [userID])
-  feedback      Feedback?
+  feedback      Feedback[]
   Company       Company?      @relation(fields: [companyID], references: [companyID])
   companyID     String?
   Endorsement   Endorsement[]
 }
 
 model Feedback {
-  feedbackID String   @id @default(cuid())
-  feedback   String
-  createdAt  DateTime
-  endorseID  String?  @unique
-  userID     String?  @unique
-  Endorse    Endorse? @relation(fields: [endorseID], references: [endorseID])
-  User       User?    @relation(fields: [userID], references: [userID])
+  feedbackID  String     @id @default(cuid())
+  feedback    String
+  createdAt   DateTime
+  endorseID   String?    @unique
+  userID      String?    @unique
+  Applicant   Applicant? @relation(fields: [applicantID], references: [applicantID])
+  Endorse     Endorse?   @relation(fields: [endorseID], references: [endorseID])
+  User        User?      @relation(fields: [userID], references: [userID])
+  applicantID String?
 }
 
 model Interviewer {
@@ -151,7 +153,7 @@ model Interviewer {
 
 model Applicant {
   applicantID    String          @id @default(uuid())
-  id             String
+  id             String          @unique
   email          String
   createdAt      DateTime        @db.Date
   updatedAt      DateTime        @db.Date
@@ -166,6 +168,7 @@ model Applicant {
   FileUpload     UploadFile?
   Notification   Notification?   @relation(fields: [notificaitonID], references: [notificationID])
   notificaitonID String?         @unique
+  Feedback       Feedback[]
 }
 
 model UploadFile {

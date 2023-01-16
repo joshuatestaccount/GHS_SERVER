@@ -258,7 +258,6 @@ export interface NexusGenFieldTypes {
     createAdministrator: NexusGenRootTypes['user'] | null; // user
     createApplication: NexusGenRootTypes['application'] | null; // application
     createComment: NexusGenRootTypes['comment'] | null; // comment
-    createEmployer: NexusGenRootTypes['user'] | null; // user
     createEndorse: NexusGenRootTypes['endorse'] | null; // endorse
     createInterviewer: NexusGenRootTypes['interviewer'] | null; // interviewer
     deleteCompany: NexusGenRootTypes['company'] | null; // company
@@ -267,6 +266,7 @@ export interface NexusGenFieldTypes {
     deleteUser: NexusGenRootTypes['user'] | null; // user
     generateApplicantCSV: Array<NexusGenRootTypes['application'] | null> | null; // [application]
     getDetailsFitlerAndSorting: Array<NexusGenRootTypes['jobDetails'] | null> | null; // [jobDetails]
+    getEndorseByCSV: Array<NexusGenRootTypes['company'] | null> | null; // [company]
     getEndorsmentByCSV: Array<NexusGenRootTypes['endorsement'] | null> | null; // [endorsement]
     login: NexusGenRootTypes['token'] | null; // token
     updateAddressByProfileID: Array<NexusGenRootTypes['address'] | null> | null; // [address]
@@ -348,6 +348,7 @@ export interface NexusGenFieldTypes {
     applyJobPost: Array<NexusGenRootTypes['JobPost'] | null> | null; // [JobPost]
     createdAt: NexusGenScalars['Date'] | null; // Date
     email: NexusGenScalars['EmailAddress'] | null; // EmailAddress
+    endorseFeedback: Array<NexusGenRootTypes['feedback'] | null> | null; // [feedback]
     id: string | null; // String
     status: string | null; // String
     updatedAt: NexusGenScalars['Date'] | null; // Date
@@ -492,7 +493,6 @@ export interface NexusGenFieldTypeNames {
     createAdministrator: 'user'
     createApplication: 'application'
     createComment: 'comment'
-    createEmployer: 'user'
     createEndorse: 'endorse'
     createInterviewer: 'interviewer'
     deleteCompany: 'company'
@@ -501,6 +501,7 @@ export interface NexusGenFieldTypeNames {
     deleteUser: 'user'
     generateApplicantCSV: 'application'
     getDetailsFitlerAndSorting: 'jobDetails'
+    getEndorseByCSV: 'company'
     getEndorsmentByCSV: 'endorsement'
     login: 'token'
     updateAddressByProfileID: 'address'
@@ -582,6 +583,7 @@ export interface NexusGenFieldTypeNames {
     applyJobPost: 'JobPost'
     createdAt: 'Date'
     email: 'EmailAddress'
+    endorseFeedback: 'feedback'
     id: 'String'
     status: 'String'
     updatedAt: 'Date'
@@ -710,6 +712,7 @@ export interface NexusGenArgTypes {
       userID: string; // ID!
     }
     createAFeedback: { // args
+      applicantID: string; // ID!
       endorseID: string; // ID!
       feedback: string; // String!
       userID: string; // ID!
@@ -727,7 +730,8 @@ export interface NexusGenArgTypes {
     createAccount: { // args
       Profile?: NexusGenInputs['ProfileInput'] | null; // ProfileInput
       auth?: NexusGenInputs['AuthInput'] | null; // AuthInput
-      role: NexusGenEnums['roles']; // roles!
+      companyName?: string | null; // String
+      role: string; // String!
     }
     createAdministrator: { // args
       Auth?: NexusGenInputs['AuthInput'] | null; // AuthInput
@@ -745,11 +749,6 @@ export interface NexusGenArgTypes {
     createComment: { // args
       comments?: NexusGenInputs['commentInput'] | null; // commentInput
       endorsementID: string; // ID!
-    }
-    createEmployer: { // args
-      auth: NexusGenInputs['AuthInput']; // AuthInput!
-      companyName: string; // String!
-      profile?: NexusGenInputs['ProfileInput'] | null; // ProfileInput
     }
     createEndorse: { // args
       companyID: string; // ID!
@@ -783,6 +782,13 @@ export interface NexusGenArgTypes {
       jobType?: string | null; // String
       location?: string | null; // String
       workType?: string | null; // String
+    }
+    getEndorseByCSV: { // args
+      end: string; // String!
+      orders: NexusGenEnums['orderedBy']; // orderedBy!
+      start: string; // String!
+      status: string; // String!
+      userID?: string | null; // ID
     }
     getEndorsmentByCSV: { // args
       end: string; // String!

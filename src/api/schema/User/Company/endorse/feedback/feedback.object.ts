@@ -27,7 +27,9 @@ export const feedbackObject = objectType({
                 return await prisma.endorse.findMany({
                     where: {
                         feedback: {
-                            feedbackID: parent.feedbackID
+                            some: {
+                                feedbackID: parent.feedbackID
+                            }
                         }
                     }
                 })
