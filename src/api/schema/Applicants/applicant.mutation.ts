@@ -5,6 +5,7 @@ import { AWSFileUpload, AWSVideoUpload } from '../../helpers/awsFileUpload.js'
 import { Dates } from '../../helpers/dateFormat.js'
 import { generateUUID } from '../../helpers/generateUUID.js'
 import signature from 'jsonwebtoken'
+import { GESend } from '../../helpers/email.js'
 
 
 const { sign } = signature
@@ -56,6 +57,9 @@ export const applicaitonMutation = extendType({
                                     jobPostID
                                 }
                             }
+                        },
+                        include: {
+                            Profile: true
                         }
                     })
 
@@ -72,6 +76,19 @@ export const applicaitonMutation = extendType({
                             }
                         }
                     })
+
+                    GESend(email, `
+                    
+                    Dear Mr/Ms ${app.Profile.lastname}
+                    Your application for the position of [job title] at [company name] has been received. Our hiring team is currently reviewing all applications for this position. If you are one of the qualifying applicants to proceed to the interview process, our recruiters will contact you for your interview schedule. 
+
+                    Kindly anticipate hearing from us soon regarding the status of your application.
+                    
+                    Thank you for your interest in our company, and we appreciate the time you invested in this application.
+                    
+                    
+                    Regards,  
+                    `, "Application Receieved")
 
                     return app
                 })
@@ -108,7 +125,7 @@ export const applicaitonMutation = extendType({
                 if (status === "approved") {
 
 
-                    return await prisma.applicant.update({
+                    const app = await prisma.applicant.update({
                         data: {
                             status: {
                                 set: status as any
@@ -138,13 +155,39 @@ export const applicaitonMutation = extendType({
                         },
                         where: {
                             applicantID
+                        },
+                        include: {
+                            Profile: true
                         }
                     })
+
+                    GESend(app.email, ` Dear Mr./Ms. ${app.Profile.lastname} 
+                    Congratulations!
+
+                    We are pleased to inform you that your application for the [job title] position at [company name] has been approved. Our recruitment team will contact you for further details and instructions.
+                    
+                    We appreciate your interest in working with us and look forward to working with you soon.
+                    
+                    
+                    Regards, 
+                    `, "Application Approved")
+
+                    GESend(app.email, `Dear Mr./Ms. ${app.Profile.lastname}  We inform you that your application has been approved for endorsement by other companies. Please check your application status on your account.
+
+                    Kindly anticipate hearing from us soon regarding the status of your application and further instructions.
+                    
+                    
+                    Regards, 
+                    `, "Endorsement")
+
+                    return app
+
+
                 }
 
 
                 if (status === "rejected") {
-                    return await prisma.applicant.update({
+                    const app = await prisma.applicant.update({
                         data: {
                             status: {
                                 set: status as any
@@ -157,8 +200,24 @@ export const applicaitonMutation = extendType({
                         },
                         where: {
                             applicantID
+                        },
+                        include: {
+                            Profile: true
                         }
                     })
+
+                    GESend(app.email, `We carefully and thoroughly evaluated a significant number of applications; unfortunately, we won’t be able to invite you to the next stage of the hiring process at this time. Despite your impressive resume, we have decided to move forward with a candidate whose qualifications are better suited to this particular position.
+
+                    Please be informed that you will not be able to apply for another position for the next thirty (30) days. 
+                    
+                    Once again, thank you so much for taking the time to apply to our company. We wish you the best of luck and much success in your future endeavors.
+                    
+                    
+                    Regards, 
+                    .`, "Applicantion Rejected")
+
+
+                    return app
                 }
             }
         })

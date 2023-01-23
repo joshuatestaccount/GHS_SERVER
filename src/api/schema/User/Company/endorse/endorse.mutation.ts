@@ -1,6 +1,7 @@
 import { extendType, idArg, nonNull, stringArg } from "nexus";
 import { prisma } from "../../../../../server.js";
 import { Dates } from "../../../../helpers/dateFormat.js";
+import { GESend } from "../../../../helpers/email.js";
 
 
 
@@ -17,6 +18,23 @@ export const endorseMutation = extendType({
                         where: { userID },
                         include: {
                             Profile: true
+                        }
+                    })
+
+
+                    const endorsement = await prisma.endorsement.findUnique({
+                        where: {
+                            endorsementID
+                        },
+                        include: {
+                            Applicant: true
+                        }
+
+                    })
+
+                    const applicant = await prisma.applicant.findUnique({
+                        where: {
+                            applicantID: endorsement.Applicant[ 0 ].applicantID
                         }
                     })
 
@@ -40,6 +58,17 @@ export const endorseMutation = extendType({
                                     userID
                                 }
                             }
+                        },
+                        include: {
+                            Endorsement: {
+                                include: {
+                                    Applicant: {
+                                        include: {
+                                            Profile: true
+                                        }
+                                    }
+                                }
+                            }
                         }
                     })
 
@@ -56,6 +85,7 @@ export const endorseMutation = extendType({
                         }
                     })
 
+                    GESend(applicant.email, ``, "Your application is being endorsed")
                     return endorse
                 })
             }

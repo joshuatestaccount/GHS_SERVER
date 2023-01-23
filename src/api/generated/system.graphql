@@ -20,6 +20,11 @@ A date string, such as 2007-12-03, compliant with the `full-date` format outline
 scalar Date
 
 """
+A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
+"""
+scalar DateTime
+
+"""
 A field whose value conforms to the standard internet email address format as specified in RFC822: https://www.w3.org/Protocols/rfc822/.
 """
 scalar EmailAddress @specifiedBy(url: "https://www.w3.org/Protocols/rfc822/")
@@ -52,7 +57,6 @@ input JobPostInput {
 }
 
 type Mutation {
-  changeEmailAddress(email: EmailAddress!, retype: EmailAddress, userID: ID!): user
   createAFeedback(applicantID: ID!, endorseID: ID!, feedback: String!, userID: ID!): feedback
   createAJobForAMM(JobDetails: jobDetailsInput, JobPost: JobPostInput, userID: ID!): JobPost
   createAJobForRecruiter(JobDetails: jobDetailsInput, JobPost: JobPostInput, userID: ID!): JobPost
@@ -62,8 +66,10 @@ type Mutation {
   createComment(comments: commentInput, endorsementID: ID!): comment
   createEndorse(companyID: ID!, endorsementID: ID!, userID: ID!): endorse
   createInterviewer(applicantID: ID!, userID: ID!): interviewer
+  createLogs(userID: ID!): logs
+  createOTP(email: EmailAddress!): otp
+  createScreening(applicantID: ID!, end: String!, start: String!, userID: ID!): screening
   deleteCompany(companyID: ID!): company
-  deleteEndorsement(endorsementID: ID!): endorsement
   deleteJobPost(jobPostID: ID!): JobPost
   deleteUser(userID: ID!): user
   generateApplicantCSV(end: String!, order: String!, start: String!, status: String!): [application]
@@ -72,7 +78,7 @@ type Mutation {
   getEndorsmentByCSV(end: String!, order: orderedBy, start: String!, status: String!): [endorsement]
   login(Auth: AuthInput): token
   updateAddressByProfileID(Address: AddressInput, profileID: ID!): [address]
-  updateAllContentUserProfile(email: EmailAddress, profile: ProfileInput, userID: ID!): user
+  updateAllContentUserProfile(Address: AddressInput, email: EmailAddress, profile: ProfileInput, userID: ID!): user
   updateApplicantStatus(applicantID: ID!, status: String!, userID: ID!): application
   updateComment(comment: commentInput, commentID: ID!): comment
   updateCompany(companyID: ID!): company
@@ -83,6 +89,7 @@ type Mutation {
   updatePassword(userID: ID!): user
   updateProfile(Profile: ProfileInput, profileID: ID!): profile
   updateUserPassword(password: String!, retype: String!, userID: ID!): user
+  verifyOTP(otp: String!): otp
   viewMyApplication(email: EmailAddress!, id: String!): token
 }
 
@@ -109,6 +116,7 @@ type Query {
   getAllFeedback: [feedback]
   getAllJobPost(limit: Int!, offset: Int!, order: orderedBy!): [JobPost]
   getAllNotification: [notification]
+  getAllOTP: [otp]
   getAllUser: [user]
   getApplicantByDWMY(select: String!): [countByGroup]
   getApplicantByID(applicationID: ID!): [application]
@@ -286,11 +294,10 @@ enum jobStatus {
 }
 
 type logs {
-  createdAt: Date
+  createdAt: DateTime
   logsID: ID
   modifiedBy: String
   title: String
-  updatedAt: Date
   users: [user]
 }
 
@@ -309,6 +316,13 @@ enum orderedBy {
   desc
 }
 
+type otp {
+  OTPID: ID
+  createdAt: DateTime
+  expiredAt: DateTime
+  otp: String
+}
+
 type profile {
   birthday: Date
   firstname: String
@@ -324,6 +338,11 @@ enum roles {
   manager
   moderator
   recruiter
+}
+
+type screening {
+  applicantInterviewed: [application]
+  screeningID: ID
 }
 
 type token {

@@ -9,6 +9,10 @@ import type { core } from "nexus"
 declare global {
   interface NexusGenCustomInputMethods<TypeName extends string> {
     /**
+     * A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
+     */
+    datetime<FieldName extends string>(fieldName: FieldName, opts?: core.CommonInputFieldConfig<TypeName, FieldName>): void // "DateTime";
+    /**
      * A date string, such as 2007-12-03, compliant with the `full-date` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
      */
     date<FieldName extends string>(fieldName: FieldName, opts?: core.CommonInputFieldConfig<TypeName, FieldName>): void // "Date";
@@ -28,6 +32,10 @@ declare global {
 }
 declare global {
   interface NexusGenCustomOutputMethods<TypeName extends string> {
+    /**
+     * A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
+     */
+    datetime<FieldName extends string>(fieldName: FieldName, ...opts: core.ScalarOutSpread<TypeName, FieldName>): void // "DateTime";
     /**
      * A date string, such as 2007-12-03, compliant with the `full-date` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
      */
@@ -103,6 +111,7 @@ export interface NexusGenScalars {
   Boolean: boolean
   ID: string
   Date: any
+  DateTime: any
   EmailAddress: any
   PhoneNumber: any
   Upload: any
@@ -193,11 +202,10 @@ export interface NexusGenObjects {
     workType?: Array<string | null> | null; // [String]
   }
   logs: { // root type
-    createdAt?: NexusGenScalars['Date'] | null; // Date
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     logsID?: string | null; // ID
     modifiedBy?: string | null; // String
     title?: string | null; // String
-    updatedAt?: NexusGenScalars['Date'] | null; // Date
   }
   notification: { // root type
     createdAt?: NexusGenScalars['Date'] | null; // Date
@@ -205,12 +213,21 @@ export interface NexusGenObjects {
     notificationStatus?: string | null; // String
     title?: string | null; // String
   }
+  otp: { // root type
+    OTPID?: string | null; // ID
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    expiredAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    otp?: string | null; // String
+  }
   profile: { // root type
     birthday?: NexusGenScalars['Date'] | null; // Date
     firstname?: string | null; // String
     lastname?: string | null; // String
     phone?: NexusGenScalars['PhoneNumber'] | null; // PhoneNumber
     profileID?: string | null; // ID
+  }
+  screening: { // root type
+    screeningID?: string | null; // ID
   }
   token: { // root type
     token?: string | null; // String
@@ -250,7 +267,6 @@ export interface NexusGenFieldTypes {
     users: Array<NexusGenRootTypes['user'] | null> | null; // [user]
   }
   Mutation: { // field return type
-    changeEmailAddress: NexusGenRootTypes['user'] | null; // user
     createAFeedback: NexusGenRootTypes['feedback'] | null; // feedback
     createAJobForAMM: NexusGenRootTypes['JobPost'] | null; // JobPost
     createAJobForRecruiter: NexusGenRootTypes['JobPost'] | null; // JobPost
@@ -260,8 +276,10 @@ export interface NexusGenFieldTypes {
     createComment: NexusGenRootTypes['comment'] | null; // comment
     createEndorse: NexusGenRootTypes['endorse'] | null; // endorse
     createInterviewer: NexusGenRootTypes['interviewer'] | null; // interviewer
+    createLogs: NexusGenRootTypes['logs'] | null; // logs
+    createOTP: NexusGenRootTypes['otp'] | null; // otp
+    createScreening: NexusGenRootTypes['screening'] | null; // screening
     deleteCompany: NexusGenRootTypes['company'] | null; // company
-    deleteEndorsement: NexusGenRootTypes['endorsement'] | null; // endorsement
     deleteJobPost: NexusGenRootTypes['JobPost'] | null; // JobPost
     deleteUser: NexusGenRootTypes['user'] | null; // user
     generateApplicantCSV: Array<NexusGenRootTypes['application'] | null> | null; // [application]
@@ -281,6 +299,7 @@ export interface NexusGenFieldTypes {
     updatePassword: NexusGenRootTypes['user'] | null; // user
     updateProfile: NexusGenRootTypes['profile'] | null; // profile
     updateUserPassword: NexusGenRootTypes['user'] | null; // user
+    verifyOTP: NexusGenRootTypes['otp'] | null; // otp
     viewMyApplication: NexusGenRootTypes['token'] | null; // token
   }
   Query: { // field return type
@@ -294,6 +313,7 @@ export interface NexusGenFieldTypes {
     getAllFeedback: Array<NexusGenRootTypes['feedback'] | null> | null; // [feedback]
     getAllJobPost: Array<NexusGenRootTypes['JobPost'] | null> | null; // [JobPost]
     getAllNotification: Array<NexusGenRootTypes['notification'] | null> | null; // [notification]
+    getAllOTP: Array<NexusGenRootTypes['otp'] | null> | null; // [otp]
     getAllUser: Array<NexusGenRootTypes['user'] | null> | null; // [user]
     getApplicantByDWMY: Array<NexusGenRootTypes['countByGroup'] | null> | null; // [countByGroup]
     getApplicantByID: Array<NexusGenRootTypes['application'] | null> | null; // [application]
@@ -427,11 +447,10 @@ export interface NexusGenFieldTypes {
     workType: Array<string | null> | null; // [String]
   }
   logs: { // field return type
-    createdAt: NexusGenScalars['Date'] | null; // Date
+    createdAt: NexusGenScalars['DateTime'] | null; // DateTime
     logsID: string | null; // ID
     modifiedBy: string | null; // String
     title: string | null; // String
-    updatedAt: NexusGenScalars['Date'] | null; // Date
     users: Array<NexusGenRootTypes['user'] | null> | null; // [user]
   }
   notification: { // field return type
@@ -443,6 +462,12 @@ export interface NexusGenFieldTypes {
     user: Array<NexusGenRootTypes['user'] | null> | null; // [user]
     userApplications: Array<NexusGenRootTypes['application'] | null> | null; // [application]
   }
+  otp: { // field return type
+    OTPID: string | null; // ID
+    createdAt: NexusGenScalars['DateTime'] | null; // DateTime
+    expiredAt: NexusGenScalars['DateTime'] | null; // DateTime
+    otp: string | null; // String
+  }
   profile: { // field return type
     birthday: NexusGenScalars['Date'] | null; // Date
     firstname: string | null; // String
@@ -451,6 +476,10 @@ export interface NexusGenFieldTypes {
     profileAddress: Array<NexusGenRootTypes['address'] | null> | null; // [address]
     profileID: string | null; // ID
     user: Array<NexusGenRootTypes['user'] | null> | null; // [user]
+  }
+  screening: { // field return type
+    applicantInterviewed: Array<NexusGenRootTypes['application'] | null> | null; // [application]
+    screeningID: string | null; // ID
   }
   token: { // field return type
     token: string | null; // String
@@ -485,7 +514,6 @@ export interface NexusGenFieldTypeNames {
     users: 'user'
   }
   Mutation: { // field return type name
-    changeEmailAddress: 'user'
     createAFeedback: 'feedback'
     createAJobForAMM: 'JobPost'
     createAJobForRecruiter: 'JobPost'
@@ -495,8 +523,10 @@ export interface NexusGenFieldTypeNames {
     createComment: 'comment'
     createEndorse: 'endorse'
     createInterviewer: 'interviewer'
+    createLogs: 'logs'
+    createOTP: 'otp'
+    createScreening: 'screening'
     deleteCompany: 'company'
-    deleteEndorsement: 'endorsement'
     deleteJobPost: 'JobPost'
     deleteUser: 'user'
     generateApplicantCSV: 'application'
@@ -516,6 +546,7 @@ export interface NexusGenFieldTypeNames {
     updatePassword: 'user'
     updateProfile: 'profile'
     updateUserPassword: 'user'
+    verifyOTP: 'otp'
     viewMyApplication: 'token'
   }
   Query: { // field return type name
@@ -529,6 +560,7 @@ export interface NexusGenFieldTypeNames {
     getAllFeedback: 'feedback'
     getAllJobPost: 'JobPost'
     getAllNotification: 'notification'
+    getAllOTP: 'otp'
     getAllUser: 'user'
     getApplicantByDWMY: 'countByGroup'
     getApplicantByID: 'application'
@@ -662,11 +694,10 @@ export interface NexusGenFieldTypeNames {
     workType: 'String'
   }
   logs: { // field return type name
-    createdAt: 'Date'
+    createdAt: 'DateTime'
     logsID: 'ID'
     modifiedBy: 'String'
     title: 'String'
-    updatedAt: 'Date'
     users: 'user'
   }
   notification: { // field return type name
@@ -678,6 +709,12 @@ export interface NexusGenFieldTypeNames {
     user: 'user'
     userApplications: 'application'
   }
+  otp: { // field return type name
+    OTPID: 'ID'
+    createdAt: 'DateTime'
+    expiredAt: 'DateTime'
+    otp: 'String'
+  }
   profile: { // field return type name
     birthday: 'Date'
     firstname: 'String'
@@ -686,6 +723,10 @@ export interface NexusGenFieldTypeNames {
     profileAddress: 'address'
     profileID: 'ID'
     user: 'user'
+  }
+  screening: { // field return type name
+    applicantInterviewed: 'application'
+    screeningID: 'ID'
   }
   token: { // field return type name
     token: 'String'
@@ -706,11 +747,6 @@ export interface NexusGenFieldTypeNames {
 
 export interface NexusGenArgTypes {
   Mutation: {
-    changeEmailAddress: { // args
-      email: NexusGenScalars['EmailAddress']; // EmailAddress!
-      retype?: NexusGenScalars['EmailAddress'] | null; // EmailAddress
-      userID: string; // ID!
-    }
     createAFeedback: { // args
       applicantID: string; // ID!
       endorseID: string; // ID!
@@ -759,11 +795,20 @@ export interface NexusGenArgTypes {
       applicantID: string; // ID!
       userID: string; // ID!
     }
+    createLogs: { // args
+      userID: string; // ID!
+    }
+    createOTP: { // args
+      email: NexusGenScalars['EmailAddress']; // EmailAddress!
+    }
+    createScreening: { // args
+      applicantID: string; // ID!
+      end: string; // String!
+      start: string; // String!
+      userID: string; // ID!
+    }
     deleteCompany: { // args
       companyID: string; // ID!
-    }
-    deleteEndorsement: { // args
-      endorsementID: string; // ID!
     }
     deleteJobPost: { // args
       jobPostID: string; // ID!
@@ -804,6 +849,7 @@ export interface NexusGenArgTypes {
       profileID: string; // ID!
     }
     updateAllContentUserProfile: { // args
+      Address?: NexusGenInputs['AddressInput'] | null; // AddressInput
       email?: NexusGenScalars['EmailAddress'] | null; // EmailAddress
       profile?: NexusGenInputs['ProfileInput'] | null; // ProfileInput
       userID: string; // ID!
@@ -849,6 +895,9 @@ export interface NexusGenArgTypes {
       password: string; // String!
       retype: string; // String!
       userID: string; // ID!
+    }
+    verifyOTP: { // args
+      otp: string; // String!
     }
     viewMyApplication: { // args
       email: NexusGenScalars['EmailAddress']; // EmailAddress!

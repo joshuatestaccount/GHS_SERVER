@@ -8,6 +8,13 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model OTP {
+  OTPID     String   @id @default(cuid())
+  otp       String   @unique
+  createdAt DateTime @db.Timestamp()
+  expiredAt DateTime @db.Timestamp()
+}
+
 model User {
   userID       String         @id @default(cuid())
   email        String         @unique
@@ -26,6 +33,7 @@ model User {
   Notification Notification[]
   Profile      Profile?
   Logs         Logs[]
+  Screening    Screening[]
 }
 
 model Logs {
@@ -169,6 +177,16 @@ model Applicant {
   Notification   Notification?   @relation(fields: [notificaitonID], references: [notificationID])
   notificaitonID String?         @unique
   Feedback       Feedback[]
+  Screening      Screening[]
+}
+
+model Screening {
+  screeningID String     @id @default(cuid())
+  DateTime    DateTime   @db.Timestamp()
+  Applicant   Applicant? @relation(fields: [applicantID], references: [applicantID])
+  applicantID String?
+  User        User?      @relation(fields: [userID], references: [userID])
+  userID      String?
 }
 
 model UploadFile {

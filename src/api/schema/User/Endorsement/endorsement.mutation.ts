@@ -46,48 +46,9 @@ export const endorsementMutation = extendType({
                                 }
                             }
                         })
-
                         return endorsement
                     }
                 })
-
-            }
-        })
-        t.field("deleteEndorsement", {
-            type: "endorsement",
-            args: { endorsementID: nonNull(idArg()) },
-            resolve: async (_, { endorsementID }, { req }): Promise<any> => {
-                const token = req.cookies[ "ghs_access_token" ];
-                const { userID, role } = verify(token, "HeadStart") as JwtPayload
-                if (userID && role === "administrator" || "morderator" || "manager") {
-
-                    const user = await prisma.user.findUnique({
-                        where: { userID },
-                        include: {
-                            Profile: true
-                        }
-                    })
-
-                    const endorsement = await prisma.endorsement.delete({
-                        where: {
-                            endorsementID
-                        }
-                    })
-
-
-                    await prisma.logs.create({
-                        data: {
-                            title: "Delete Endorsement",
-                            modifiedBy: `${user.Profile.firstname} ${user.Profile.lastname}`,
-                            createdAt: Dates,
-                            User: {
-                                connect: {
-                                    userID
-                                }
-                            }
-                        }
-                    })
-                }
             }
         })
         t.list.field("getEndorsmentByCSV", {

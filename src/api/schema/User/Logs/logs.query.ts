@@ -14,7 +14,10 @@ export const LogsQuery = extendType({
                             some: {
                                 userID: userID
                             }
-                        }
+                        },
+                    },
+                    orderBy: {
+                        createdAt: "desc"
                     },
                     take: limit,
                     skip: offset

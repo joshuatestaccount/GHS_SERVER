@@ -9,11 +9,12 @@ import { join } from 'path'
 import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.mjs'
 import authorization from 'nexus';
 const { fieldAuthorizePlugin, declarativeWrappingPlugin } = authorization;
+import { PrismaClient } from '@prisma/client'
+import { PubSub } from "graphql-subscriptions/dist/pubsub.js"
+import { expressMiddleware } from "@apollo/server/express4"
 import express from 'express'
 import cookieParser from "cookie-parser"
 import dotenv from 'dotenv'
-import { PrismaClient } from '@prisma/client'
-import { PubSub } from "graphql-subscriptions/dist/pubsub.js"
 export const prisma = new PrismaClient()
 export const pubsub = new PubSub()
 import cors from 'cors'
@@ -21,8 +22,7 @@ import pgk from 'body-parser'
 const { json } = pgk
 dotenv.config()
 
-import * as Information from './api/schema/compile.js'
-import { expressMiddleware } from "@apollo/server/express4"
+import * as CompileFile from './api/schema/compile.js'
 
 export const startApolloServer = async () => {
     const app = express()
@@ -38,7 +38,7 @@ export const startApolloServer = async () => {
     app.use(graphqlUploadExpress())
 
     const schema = makeSchema({
-        types: [ Information ],
+        types: [ CompileFile ],
         outputs: {
             schema: join(process.cwd(), "/src/api/generated/system.graphql"),
             typegen: join(process.cwd(), "/src/api/generated/system.ts"),

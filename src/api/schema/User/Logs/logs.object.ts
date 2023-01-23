@@ -1,5 +1,7 @@
-import { objectType } from 'nexus'
+import { asNexusMethod, objectType } from 'nexus'
 import { prisma } from '../../../../server.js';
+
+import { GraphQLDateTime } from 'graphql-scalars';
 
 export const logsObejct = objectType({
     name: "logs",
@@ -7,8 +9,7 @@ export const logsObejct = objectType({
         t.id("logsID");
         t.string("title");
         t.string("modifiedBy");
-        t.date("createdAt");
-        t.date("updatedAt");
+        t.datetime("createdAt");
         t.list.field("users", {
             type: "user",
             resolve: async (parent): Promise<any> => {

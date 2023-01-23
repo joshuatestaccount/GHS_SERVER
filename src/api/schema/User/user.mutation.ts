@@ -137,6 +137,7 @@ export const userMutation = extendType({
                     noTimestamp: false,
                 })
 
+
                 const accessToken = sign({ userID: user.userID, role: user.role }, "HeadStart", {
                     algorithm: "HS512",
                     expiresIn: "7d",
@@ -168,23 +169,51 @@ export const userMutation = extendType({
         })
         t.field("updateAllContentUserProfile", {
             type: "user",
-            args: { userID: nonNull(idArg()), profile: "ProfileInput", email: "EmailAddress" },
-            resolve: async (_, { profile: { birthday, firstname, lastname, phone }, email, userID }): Promise<any> => {
+            args: { userID: nonNull(idArg()), profile: "ProfileInput", email: "EmailAddress", Address: "AddressInput" },
+            resolve: async (_, { profile: { birthday, firstname, lastname, phone }, email, userID, Address: { city, province, street, zipcode } }): Promise<any> => {
                 return await prisma.$transaction(async () => {
-                    return await prisma.user.update({
+                    const user = await prisma.user.update({
                         data: {
                             email,
                             updatedAt: Dates,
                             Profile: {
                                 update: {
-                                    firstname, birthday, lastname, phone
-                                }
-                            }
+                                    firstname, birthday, lastname, phone,
+                                    Address: {
+                                        upsert: {
+                                            create: {
+                                                city, province, street, zipcode
+                                            },
+                                            update: {
+                                                city, province, street, zipcode
+                                            }
+                                        }
+                                    }
+                                },
+                            },
+
                         },
                         where: {
                             userID
+                        },
+                        include: {
+                            Profile: true
                         }
                     })
+
+                    await prisma.logs.create({
+                        data: {
+                            title: "Profile Update",
+                            createdAt: Dates,
+                            modifiedBy: `${user.Profile.firstname} ${user.Profile.lastname}`,
+                            User: {
+                                connect: {
+                                    userID: userID
+                                }
+                            }
+                        }
+                    })
+                    return user
                 })
             }
         })
@@ -215,7 +244,6 @@ export const userMutation = extendType({
                         }
                     })
 
-                    console.log(findUser)
 
                     const pass = await bcrypt.hash(new Date(resetUserpass.Profile.birthday).toISOString().slice(0, 10).replaceAll("-", ""), 12)
 
@@ -249,22 +277,6 @@ export const userMutation = extendType({
 
 
             }
-        })
-        t.field("changeEmailAddress", {
-            type: "user",
-            args: { email: nonNull("EmailAddress"), retype: "EmailAddress", userID: nonNull(idArg()) },
-            resolve: async (_, { email, retype, userID }): Promise<any> => {
-                if (email !== retype) throw new GraphQLError("Email Address is not matched")
-                return await prisma.user.update({
-                    data: {
-                        email
-                    },
-                    where: {
-                        userID
-                    }
-                })
-            }
-
         })
         t.field("updateUserPassword", {
             type: "user",
