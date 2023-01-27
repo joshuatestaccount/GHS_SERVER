@@ -14,6 +14,16 @@ CREATE TYPE "notificationStatus" AS ENUM ('read', 'unread');
 CREATE TYPE "endorseStatus" AS ENUM ('waiting', 'rejected', 'approved');
 
 -- CreateTable
+CREATE TABLE "OTP" (
+    "OTPID" TEXT NOT NULL,
+    "otp" TEXT NOT NULL,
+    "createdAt" TIMESTAMP NOT NULL,
+    "expiredAt" TIMESTAMP NOT NULL,
+
+    CONSTRAINT "OTP_pkey" PRIMARY KEY ("OTPID")
+);
+
+-- CreateTable
 CREATE TABLE "User" (
     "userID" TEXT NOT NULL,
     "email" TEXT NOT NULL,
@@ -31,8 +41,7 @@ CREATE TABLE "Logs" (
     "logsID" TEXT NOT NULL,
     "title" TEXT NOT NULL,
     "modifiedBy" TEXT NOT NULL,
-    "createdAt" DATE NOT NULL,
-    "updatedAt" DATE NOT NULL,
+    "createdAt" TIMESTAMP NOT NULL,
 
     CONSTRAINT "Logs_pkey" PRIMARY KEY ("logsID")
 );
@@ -40,6 +49,7 @@ CREATE TABLE "Logs" (
 -- CreateTable
 CREATE TABLE "Notification" (
     "notificationID" TEXT NOT NULL,
+    "title" TEXT NOT NULL,
     "notificationStatus" "notificationStatus" NOT NULL DEFAULT 'unread',
     "createdAt" DATE NOT NULL,
     "userID" TEXT,
@@ -54,7 +64,6 @@ CREATE TABLE "Profile" (
     "lastname" TEXT NOT NULL,
     "phone" TEXT NOT NULL,
     "birthday" DATE,
-    "endorsementID" TEXT,
     "applicantID" TEXT,
     "userID" TEXT,
 
@@ -78,6 +87,7 @@ CREATE TABLE "Address" (
 CREATE TABLE "Company" (
     "companyID" TEXT NOT NULL,
     "companyName" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3),
 
     CONSTRAINT "Company_pkey" PRIMARY KEY ("companyID")
 );
@@ -109,7 +119,6 @@ CREATE TABLE "Comment" (
 -- CreateTable
 CREATE TABLE "Endorsement" (
     "endorsementID" TEXT NOT NULL,
-    "email" TEXT NOT NULL,
     "Status" TEXT NOT NULL,
     "createdAt" DATE NOT NULL,
     "updatedAt" DATE NOT NULL,
@@ -123,9 +132,9 @@ CREATE TABLE "Endorsement" (
 CREATE TABLE "Endorse" (
     "endorseID" TEXT NOT NULL,
     "endorseStatus" "endorseStatus" NOT NULL DEFAULT 'waiting',
-    "userUserID" TEXT NOT NULL,
+    "userID" TEXT NOT NULL,
+    "createdAt" DATE NOT NULL,
     "companyID" TEXT,
-    "endorsementID" TEXT,
 
     CONSTRAINT "Endorse_pkey" PRIMARY KEY ("endorseID")
 );
@@ -137,6 +146,7 @@ CREATE TABLE "Feedback" (
     "createdAt" TIMESTAMP(3) NOT NULL,
     "endorseID" TEXT,
     "userID" TEXT,
+    "applicantID" TEXT,
 
     CONSTRAINT "Feedback_pkey" PRIMARY KEY ("feedbackID")
 );
@@ -160,8 +170,20 @@ CREATE TABLE "Applicant" (
     "status" "applicantStatus" NOT NULL DEFAULT 'waiting',
     "jobPostID" TEXT NOT NULL,
     "interviewerID" TEXT,
+    "endorsementID" TEXT,
+    "notificaitonID" TEXT,
 
     CONSTRAINT "Applicant_pkey" PRIMARY KEY ("applicantID")
+);
+
+-- CreateTable
+CREATE TABLE "Screening" (
+    "screeningID" TEXT NOT NULL,
+    "DateTime" TIMESTAMP NOT NULL,
+    "applicantID" TEXT,
+    "userID" TEXT,
+
+    CONSTRAINT "Screening_pkey" PRIMARY KEY ("screeningID")
 );
 
 -- CreateTable
@@ -211,11 +233,17 @@ CREATE TABLE "_LogsToUser" (
     "B" TEXT NOT NULL
 );
 
--- CreateIndex
-CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+-- CreateTable
+CREATE TABLE "_EndorseToEndorsement" (
+    "A" TEXT NOT NULL,
+    "B" TEXT NOT NULL
+);
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Profile_endorsementID_key" ON "Profile"("endorsementID");
+CREATE UNIQUE INDEX "OTP_otp_key" ON "OTP"("otp");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Profile_applicantID_key" ON "Profile"("applicantID");
@@ -245,7 +273,13 @@ CREATE UNIQUE INDEX "Feedback_endorseID_key" ON "Feedback"("endorseID");
 CREATE UNIQUE INDEX "Feedback_userID_key" ON "Feedback"("userID");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Applicant_id_key" ON "Applicant"("id");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Applicant_interviewerID_key" ON "Applicant"("interviewerID");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Applicant_notificaitonID_key" ON "Applicant"("notificaitonID");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "UploadFile_applicantID_key" ON "UploadFile"("applicantID");
@@ -262,6 +296,12 @@ CREATE UNIQUE INDEX "_LogsToUser_AB_unique" ON "_LogsToUser"("A", "B");
 -- CreateIndex
 CREATE INDEX "_LogsToUser_B_index" ON "_LogsToUser"("B");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "_EndorseToEndorsement_AB_unique" ON "_EndorseToEndorsement"("A", "B");
+
+-- CreateIndex
+CREATE INDEX "_EndorseToEndorsement_B_index" ON "_EndorseToEndorsement"("B");
+
 -- AddForeignKey
 ALTER TABLE "User" ADD CONSTRAINT "User_companyID_fkey" FOREIGN KEY ("companyID") REFERENCES "Company"("companyID") ON DELETE RESTRICT ON UPDATE CASCADE;
 
@@ -270,9 +310,6 @@ ALTER TABLE "Notification" ADD CONSTRAINT "Notification_userID_fkey" FOREIGN KEY
 
 -- AddForeignKey
 ALTER TABLE "Profile" ADD CONSTRAINT "Profile_applicantID_fkey" FOREIGN KEY ("applicantID") REFERENCES "Applicant"("applicantID") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Profile" ADD CONSTRAINT "Profile_endorsementID_fkey" FOREIGN KEY ("endorsementID") REFERENCES "Endorsement"("endorsementID") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Profile" ADD CONSTRAINT "Profile_userID_fkey" FOREIGN KEY ("userID") REFERENCES "User"("userID") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -299,13 +336,13 @@ ALTER TABLE "Endorsement" ADD CONSTRAINT "Endorsement_companyID_fkey" FOREIGN KE
 ALTER TABLE "Endorsement" ADD CONSTRAINT "Endorsement_userID_fkey" FOREIGN KEY ("userID") REFERENCES "User"("userID") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Endorse" ADD CONSTRAINT "Endorse_userUserID_fkey" FOREIGN KEY ("userUserID") REFERENCES "User"("userID") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Endorse" ADD CONSTRAINT "Endorse_userID_fkey" FOREIGN KEY ("userID") REFERENCES "User"("userID") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Endorse" ADD CONSTRAINT "Endorse_companyID_fkey" FOREIGN KEY ("companyID") REFERENCES "Company"("companyID") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Endorse" ADD CONSTRAINT "Endorse_endorsementID_fkey" FOREIGN KEY ("endorsementID") REFERENCES "Endorsement"("endorsementID") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "Feedback" ADD CONSTRAINT "Feedback_applicantID_fkey" FOREIGN KEY ("applicantID") REFERENCES "Applicant"("applicantID") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Feedback" ADD CONSTRAINT "Feedback_endorseID_fkey" FOREIGN KEY ("endorseID") REFERENCES "Endorse"("endorseID") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -321,6 +358,18 @@ ALTER TABLE "Applicant" ADD CONSTRAINT "Applicant_interviewerID_fkey" FOREIGN KE
 
 -- AddForeignKey
 ALTER TABLE "Applicant" ADD CONSTRAINT "Applicant_jobPostID_fkey" FOREIGN KEY ("jobPostID") REFERENCES "JobPost"("jobPostID") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Applicant" ADD CONSTRAINT "Applicant_endorsementID_fkey" FOREIGN KEY ("endorsementID") REFERENCES "Endorsement"("endorsementID") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Applicant" ADD CONSTRAINT "Applicant_notificaitonID_fkey" FOREIGN KEY ("notificaitonID") REFERENCES "Notification"("notificationID") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Screening" ADD CONSTRAINT "Screening_applicantID_fkey" FOREIGN KEY ("applicantID") REFERENCES "Applicant"("applicantID") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Screening" ADD CONSTRAINT "Screening_userID_fkey" FOREIGN KEY ("userID") REFERENCES "User"("userID") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "UploadFile" ADD CONSTRAINT "UploadFile_applicantID_fkey" FOREIGN KEY ("applicantID") REFERENCES "Applicant"("applicantID") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -342,3 +391,9 @@ ALTER TABLE "_LogsToUser" ADD CONSTRAINT "_LogsToUser_A_fkey" FOREIGN KEY ("A") 
 
 -- AddForeignKey
 ALTER TABLE "_LogsToUser" ADD CONSTRAINT "_LogsToUser_B_fkey" FOREIGN KEY ("B") REFERENCES "User"("userID") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_EndorseToEndorsement" ADD CONSTRAINT "_EndorseToEndorsement_A_fkey" FOREIGN KEY ("A") REFERENCES "Endorse"("endorseID") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_EndorseToEndorsement" ADD CONSTRAINT "_EndorseToEndorsement_B_fkey" FOREIGN KEY ("B") REFERENCES "Endorsement"("endorsementID") ON DELETE CASCADE ON UPDATE CASCADE;

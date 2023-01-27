@@ -345,6 +345,7 @@ export interface NexusGenFieldTypes {
     getUserLogs: Array<NexusGenRootTypes['logs'] | null> | null; // [logs]
     jobQuery: Array<NexusGenRootTypes['JobPost'] | null> | null; // [JobPost]
     profileQuery: Array<NexusGenRootTypes['profile'] | null> | null; // [profile]
+    searchApplicantID: Array<NexusGenRootTypes['application'] | null> | null; // [application]
   }
   Subscription: { // field return type
     NotificationSubscriptions: NexusGenRootTypes['notification'] | null; // notification
@@ -592,6 +593,7 @@ export interface NexusGenFieldTypeNames {
     getUserLogs: 'logs'
     jobQuery: 'JobPost'
     profileQuery: 'profile'
+    searchApplicantID: 'application'
   }
   Subscription: { // field return type name
     NotificationSubscriptions: 'notification'
@@ -1005,6 +1007,13 @@ export interface NexusGenArgTypes {
     }
     profileQuery: { // args
       userID: string; // ID!
+    }
+    searchApplicantID: { // args
+      limit: number; // Int!
+      offset: number; // Int!
+      order: NexusGenEnums['orderedBy']; // orderedBy!
+      search: string; // String!
+      status: string; // String!
     }
   }
 }

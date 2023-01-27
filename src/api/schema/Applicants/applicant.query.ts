@@ -21,6 +21,26 @@ export const applicantsQuery = extendType({
                 })
             }
         })
+        t.list.field("searchApplicantID", {
+            type: "application",
+            args: { search: nonNull(stringArg()), status: nonNull(stringArg()), limit: nonNull(intArg()), offset: nonNull(intArg()), order: nonNull("orderedBy") },
+            resolve: async (_, { search, status, order, limit, offset }): Promise<any> => {
+                return await prisma.applicant.findMany({
+                    where: {
+                        status: status as any,
+                        id: {
+                            contains: search,
+                            mode: "insensitive"
+                        },
+                    },
+                    take: limit,
+                    skip: offset,
+                    orderBy: {
+                        createdAt: order
+                    }
+                })
+            }
+        })
         t.list.field("getApplicantByID", {
             type: "application",
             args: {
@@ -43,8 +63,8 @@ export const applicantsQuery = extendType({
         t.list.field("getAllApplicationDateCount", {
             type: "countByGroup",
             resolve: async (): Promise<any> => {
-                const app =  await prisma.applicant.groupBy({
-                    by: ['createdAt'],
+                const app = await prisma.applicant.groupBy({
+                    by: [ 'createdAt' ],
                     orderBy: {
                         createdAt: "asc"
                     },
@@ -52,28 +72,26 @@ export const applicantsQuery = extendType({
                         applicantID: true
                     }
                 })
-           return  app.map(({_count, createdAt}) => {
-                return    {  _count: _count.applicantID,createdAt:  createdAt}
-               })
+                return app.map(({ _count, createdAt }) => {
+                    return { _count: _count.applicantID, createdAt: createdAt }
+                })
             }
         })
 
         t.list.field("getApplicantByDWMY", {
             type: "countByGroup",
-            
-            args: { select: nonNull(stringArg())},
-            resolve: async (_, {select}): Promise<any> => {
-               
+
+            args: { select: nonNull(stringArg()) },
+            resolve: async (_, { select }): Promise<any> => {
+
                 const app = await prisma.$queryRawUnsafe(`SELECT DATE_TRUNC('${select}', "createdAt" ) AS "createdAt", 
                 COUNT("applicantID") AS count FROM public."Applicant"
                 GROUP BY DATE_TRUNC('${select}', "createdAt")
                 ORDER BY "createdAt" ASC
                 `)
-            
 
-
-                return app.map(({count, createdAt}) => {
-                    return {_count: parseInt(count), createdAt: createdAt}
+                return app.map(({ count, createdAt }) => {
+                    return { _count: parseInt(count), createdAt: createdAt }
                 })
 
             }

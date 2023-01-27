@@ -148,6 +148,7 @@ type Query {
   getUserLogs(limit: Int!, offset: Int!, userID: ID!): [logs]
   jobQuery: [JobPost]
   profileQuery(userID: ID!): [profile]
+  searchApplicantID(limit: Int!, offset: Int!, order: orderedBy!, search: String!, status: String!): [application]
 }
 
 type Subscription {
