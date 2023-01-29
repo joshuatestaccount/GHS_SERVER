@@ -221,6 +221,17 @@ export const applicaitonMutation = extendType({
                 }
             }
         })
+        t.field("terminateMyApplication", {
+            type: "application",
+            args: { applicantID: nonNull(idArg()) },
+            resolve: async (_, { applicantID }): Promise<any> => {
+                return await prisma.applicant.delete({
+                    where: {
+                        applicantID
+                    }
+                })
+            }
+        })
         t.field("viewMyApplication", {
             type: "token",
             args: { id: nonNull(stringArg()), email: nonNull("EmailAddress") },
@@ -263,7 +274,6 @@ export const applicaitonMutation = extendType({
                 return { token }
             }
         })
-
         t.list.field("generateApplicantCSV", {
             type: "application",
             args: { status: nonNull(stringArg()), start: nonNull(stringArg()), end: nonNull(stringArg()), order: nonNull(stringArg()) },

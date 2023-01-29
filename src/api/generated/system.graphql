@@ -57,6 +57,7 @@ input JobPostInput {
 }
 
 type Mutation {
+  applicationUpdate(address: AddressInput, applicantID: ID!, email: EmailAddress, profile: ProfileInput): application
   createAFeedback(applicantID: ID!, endorseID: ID!, feedback: String!, userID: ID!): feedback
   createAJobForAMM(JobDetails: jobDetailsInput, JobPost: JobPostInput, userID: ID!): JobPost
   createAJobForRecruiter(JobDetails: jobDetailsInput, JobPost: JobPostInput, userID: ID!): JobPost
@@ -77,6 +78,7 @@ type Mutation {
   getEndorseByCSV(end: String!, orders: orderedBy!, start: String!, status: String!, userID: ID): [company]
   getEndorsmentByCSV(end: String!, order: orderedBy, start: String!, status: String!): [endorsement]
   login(Auth: AuthInput): token
+  terminateMyApplication(applicantID: ID!): application
   updateAddressByProfileID(Address: AddressInput, profileID: ID!): [address]
   updateAllContentUserProfile(Address: AddressInput, email: EmailAddress, profile: ProfileInput, userID: ID!): user
   updateApplicantStatus(applicantID: ID!, status: String!, userID: ID!): application

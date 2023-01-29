@@ -267,6 +267,7 @@ export interface NexusGenFieldTypes {
     users: Array<NexusGenRootTypes['user'] | null> | null; // [user]
   }
   Mutation: { // field return type
+    applicationUpdate: NexusGenRootTypes['application'] | null; // application
     createAFeedback: NexusGenRootTypes['feedback'] | null; // feedback
     createAJobForAMM: NexusGenRootTypes['JobPost'] | null; // JobPost
     createAJobForRecruiter: NexusGenRootTypes['JobPost'] | null; // JobPost
@@ -287,6 +288,7 @@ export interface NexusGenFieldTypes {
     getEndorseByCSV: Array<NexusGenRootTypes['company'] | null> | null; // [company]
     getEndorsmentByCSV: Array<NexusGenRootTypes['endorsement'] | null> | null; // [endorsement]
     login: NexusGenRootTypes['token'] | null; // token
+    terminateMyApplication: NexusGenRootTypes['application'] | null; // application
     updateAddressByProfileID: Array<NexusGenRootTypes['address'] | null> | null; // [address]
     updateAllContentUserProfile: NexusGenRootTypes['user'] | null; // user
     updateApplicantStatus: NexusGenRootTypes['application'] | null; // application
@@ -515,6 +517,7 @@ export interface NexusGenFieldTypeNames {
     users: 'user'
   }
   Mutation: { // field return type name
+    applicationUpdate: 'application'
     createAFeedback: 'feedback'
     createAJobForAMM: 'JobPost'
     createAJobForRecruiter: 'JobPost'
@@ -535,6 +538,7 @@ export interface NexusGenFieldTypeNames {
     getEndorseByCSV: 'company'
     getEndorsmentByCSV: 'endorsement'
     login: 'token'
+    terminateMyApplication: 'application'
     updateAddressByProfileID: 'address'
     updateAllContentUserProfile: 'user'
     updateApplicantStatus: 'application'
@@ -749,6 +753,12 @@ export interface NexusGenFieldTypeNames {
 
 export interface NexusGenArgTypes {
   Mutation: {
+    applicationUpdate: { // args
+      address?: NexusGenInputs['AddressInput'] | null; // AddressInput
+      applicantID: string; // ID!
+      email?: NexusGenScalars['EmailAddress'] | null; // EmailAddress
+      profile?: NexusGenInputs['ProfileInput'] | null; // ProfileInput
+    }
     createAFeedback: { // args
       applicantID: string; // ID!
       endorseID: string; // ID!
@@ -845,6 +855,9 @@ export interface NexusGenArgTypes {
     }
     login: { // args
       Auth?: NexusGenInputs['AuthInput'] | null; // AuthInput
+    }
+    terminateMyApplication: { // args
+      applicantID: string; // ID!
     }
     updateAddressByProfileID: { // args
       Address?: NexusGenInputs['AddressInput'] | null; // AddressInput
