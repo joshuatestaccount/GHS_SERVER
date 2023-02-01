@@ -57,7 +57,6 @@ input JobPostInput {
 }
 
 type Mutation {
-  applicationUpdate(address: AddressInput, applicantID: ID!, email: EmailAddress, profile: ProfileInput): application
   createAFeedback(applicantID: ID!, endorseID: ID!, feedback: String!, userID: ID!): feedback
   createAJobForAMM(JobDetails: jobDetailsInput, JobPost: JobPostInput, userID: ID!): JobPost
   createAJobForRecruiter(JobDetails: jobDetailsInput, JobPost: JobPostInput, userID: ID!): JobPost

@@ -24,7 +24,6 @@ export const jobQuery = extendType({
                 })
             }
         })
-
         t.list.field("getAllJobPost", {
             type: "JobPost",
             args: { limit: nonNull(intArg()), offset: nonNull(intArg()), order: nonNull("orderedBy") },

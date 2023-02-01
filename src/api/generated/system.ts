@@ -267,7 +267,6 @@ export interface NexusGenFieldTypes {
     users: Array<NexusGenRootTypes['user'] | null> | null; // [user]
   }
   Mutation: { // field return type
-    applicationUpdate: NexusGenRootTypes['application'] | null; // application
     createAFeedback: NexusGenRootTypes['feedback'] | null; // feedback
     createAJobForAMM: NexusGenRootTypes['JobPost'] | null; // JobPost
     createAJobForRecruiter: NexusGenRootTypes['JobPost'] | null; // JobPost
@@ -517,7 +516,6 @@ export interface NexusGenFieldTypeNames {
     users: 'user'
   }
   Mutation: { // field return type name
-    applicationUpdate: 'application'
     createAFeedback: 'feedback'
     createAJobForAMM: 'JobPost'
     createAJobForRecruiter: 'JobPost'
@@ -753,12 +751,6 @@ export interface NexusGenFieldTypeNames {
 
 export interface NexusGenArgTypes {
   Mutation: {
-    applicationUpdate: { // args
-      address?: NexusGenInputs['AddressInput'] | null; // AddressInput
-      applicantID: string; // ID!
-      email?: NexusGenScalars['EmailAddress'] | null; // EmailAddress
-      profile?: NexusGenInputs['ProfileInput'] | null; // ProfileInput
-    }
     createAFeedback: { // args
       applicantID: string; // ID!
       endorseID: string; // ID!

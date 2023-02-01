@@ -194,7 +194,7 @@ export const jobMutation = extendType({
             resolve: async (_, { jobPostID, status }, { req }): Promise<any> => {
                 const token = req.cookies[ "ghs_access_token" ];
                 const { userID, role } = verify(token, "HeadStart") as JwtPayload
-                if (userID && role === "administrator") {
+                if (userID && role === "administrator" || "manager" || "moderator") {
                     return await prisma.$transaction(async () => {
 
                         const user = await prisma.user.findUnique({
