@@ -267,6 +267,7 @@ export interface NexusGenFieldTypes {
     users: Array<NexusGenRootTypes['user'] | null> | null; // [user]
   }
   Mutation: { // field return type
+    changePin: NexusGenRootTypes['user'] | null; // user
     createAFeedback: NexusGenRootTypes['feedback'] | null; // feedback
     createAJobForAMM: NexusGenRootTypes['JobPost'] | null; // JobPost
     createAJobForRecruiter: NexusGenRootTypes['JobPost'] | null; // JobPost
@@ -307,6 +308,7 @@ export interface NexusGenFieldTypes {
     getAddressQuery: Array<NexusGenRootTypes['address'] | null> | null; // [address]
     getAllApplication: Array<NexusGenRootTypes['application'] | null> | null; // [application]
     getAllApplicationDateCount: Array<NexusGenRootTypes['countByGroup'] | null> | null; // [countByGroup]
+    getAllCategories: Array<NexusGenRootTypes['jobDetails'] | null> | null; // [jobDetails]
     getAllCompany: Array<NexusGenRootTypes['company'] | null> | null; // [company]
     getAllCountJob: Array<NexusGenRootTypes['JobPost'] | null> | null; // [JobPost]
     getAllEndorse: Array<NexusGenRootTypes['endorse'] | null> | null; // [endorse]
@@ -516,6 +518,7 @@ export interface NexusGenFieldTypeNames {
     users: 'user'
   }
   Mutation: { // field return type name
+    changePin: 'user'
     createAFeedback: 'feedback'
     createAJobForAMM: 'JobPost'
     createAJobForRecruiter: 'JobPost'
@@ -556,6 +559,7 @@ export interface NexusGenFieldTypeNames {
     getAddressQuery: 'address'
     getAllApplication: 'application'
     getAllApplicationDateCount: 'countByGroup'
+    getAllCategories: 'jobDetails'
     getAllCompany: 'company'
     getAllCountJob: 'JobPost'
     getAllEndorse: 'endorse'
@@ -751,6 +755,11 @@ export interface NexusGenFieldTypeNames {
 
 export interface NexusGenArgTypes {
   Mutation: {
+    changePin: { // args
+      pin: number; // Int!
+      rePin: number; // Int!
+      userID: string; // ID!
+    }
     createAFeedback: { // args
       applicantID: string; // ID!
       endorseID: string; // ID!
@@ -847,6 +856,7 @@ export interface NexusGenArgTypes {
     }
     login: { // args
       Auth?: NexusGenInputs['AuthInput'] | null; // AuthInput
+      pin: string; // String!
     }
     terminateMyApplication: { // args
       applicantID: string; // ID!

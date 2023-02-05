@@ -25,11 +25,11 @@ export const jobDetialsQuery = extendType({
         t.list.field("getSpecificJob", {
             type: "jobDetails",
             args: { category: stringArg(), jobType: list(stringArg()), workType: list(stringArg()), limit: nonNull(intArg()), offset: nonNull(intArg()) },
-            resolve: async (_, {category, jobType, workType, limit, offset}): Promise<any> => {
-               
-                
+            resolve: async (_, { category, jobType, workType, limit, offset }): Promise<any> => {
 
-                if(category) {
+
+
+                if (category) {
                     const catege = await prisma.jobDetails.findMany({
                         where: {
                             category,
@@ -44,10 +44,10 @@ export const jobDetialsQuery = extendType({
                 }
 
 
-                if(jobType) {
+                if (jobType) {
                     const jbTyp = await prisma.jobDetails.findMany({
                         where: {
-                            jobType :{
+                            jobType: {
                                 hasEvery: jobType
                             },
                             JobPost: {
@@ -60,7 +60,7 @@ export const jobDetialsQuery = extendType({
                     return jbTyp
                 }
 
-                if(workType){
+                if (workType) {
                     const wrkType = await prisma.jobDetails.findMany({
                         where: {
                             workType: {
@@ -78,14 +78,23 @@ export const jobDetialsQuery = extendType({
             }
         })
 
+        t.list.field("getAllCategories", {
+            type: "jobDetails",
+            resolve: async (): Promise<any> => {
+                return await prisma.jobDetails.groupBy({
+                    by: [ "category" ],
+                })
+            }
+        })
+
         t.list.field("getJobRelated", {
             type: "jobDetails",
             args: { category: nonNull(stringArg()), limit: nonNull(intArg()), offset: nonNull(intArg()) },
-            resolve: async (_, { category, limit, offset}): Promise<any> => {
+            resolve: async (_, { category, limit, offset }): Promise<any> => {
                 return await prisma.jobDetails.findMany({
                     where: {
                         category,
-                        JobPost :{ 
+                        JobPost: {
                             status: "approved"
                         }
                     },

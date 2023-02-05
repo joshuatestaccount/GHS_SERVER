@@ -32,6 +32,7 @@ CREATE TABLE "User" (
     "createdAt" DATE NOT NULL,
     "updatedAt" DATE NOT NULL,
     "companyID" TEXT NOT NULL,
+    "pin" TEXT NOT NULL DEFAULT '0000',
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("userID")
 );

@@ -57,6 +57,7 @@ input JobPostInput {
 }
 
 type Mutation {
+  changePin(pin: Int!, rePin: Int!, userID: ID!): user
   createAFeedback(applicantID: ID!, endorseID: ID!, feedback: String!, userID: ID!): feedback
   createAJobForAMM(JobDetails: jobDetailsInput, JobPost: JobPostInput, userID: ID!): JobPost
   createAJobForRecruiter(JobDetails: jobDetailsInput, JobPost: JobPostInput, userID: ID!): JobPost
@@ -76,7 +77,7 @@ type Mutation {
   getDetailsFitlerAndSorting(category: String, jobType: String, location: String, workType: String): [jobDetails]
   getEndorseByCSV(end: String!, orders: orderedBy!, start: String!, status: String!, userID: ID): [company]
   getEndorsmentByCSV(end: String!, order: orderedBy, start: String!, status: String!): [endorsement]
-  login(Auth: AuthInput): token
+  login(Auth: AuthInput, pin: String!): token
   terminateMyApplication(applicantID: ID!): application
   updateAddressByProfileID(Address: AddressInput, profileID: ID!): [address]
   updateAllContentUserProfile(Address: AddressInput, email: EmailAddress, profile: ProfileInput, userID: ID!): user
@@ -110,6 +111,7 @@ type Query {
   getAddressQuery: [address]
   getAllApplication: [application]
   getAllApplicationDateCount: [countByGroup]
+  getAllCategories: [jobDetails]
   getAllCompany: [company]
   getAllCountJob: [JobPost]
   getAllEndorse: [endorse]

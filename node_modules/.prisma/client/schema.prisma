@@ -23,6 +23,7 @@ model User {
   createdAt    DateTime       @db.Date
   updatedAt    DateTime       @db.Date
   companyID    String
+  pin          String         @default("0000")
   Company      Company        @relation(fields: [companyID], references: [companyID])
   Comment      Comment?
   Endorse      Endorse[]

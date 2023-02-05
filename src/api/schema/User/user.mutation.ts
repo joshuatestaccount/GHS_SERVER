@@ -116,8 +116,8 @@ export const userMutation = extendType({
         })
         t.field("login", {
             type: "token",
-            args: { Auth: "AuthInput" },
-            resolve: async (_, { Auth: { email, password } }, { res }): Promise<any> => {
+            args: { Auth: "AuthInput", pin: nonNull(stringArg()) },
+            resolve: async (_, { Auth: { email, password }, pin }, { res }): Promise<any> => {
                 const user = await prisma.user.findUnique({
                     where: {
                         email
@@ -127,9 +127,13 @@ export const userMutation = extendType({
                     }
                 })
 
+
+
                 if (!user) throw new GraphQLError("Email address is not found")
                 const valid = await bcrypt.compare(password, user.password)
                 if (!valid) throw new GraphQLError("Invalid Credentials");
+
+                if (user.pin !== pin) throw new GraphQLError("Try your pin again")
 
                 const token = sign({ userID: user.userID, role: user.role }, "HeadStart", {
                     algorithm: "HS512",
@@ -165,6 +169,20 @@ export const userMutation = extendType({
                 })
 
                 return { token }
+            }
+        })
+        t.field("changePin", {
+            type: "user",
+            args: { pin: nonNull(intArg()), rePin: nonNull(intArg()), userID: nonNull(idArg()) },
+            resolve: async (_, { userID, pin, rePin }: any): Promise<any> => {
+                if (rePin !== pin) throw new GraphQLError("Pin is not matched")
+
+                return await prisma.user.update({
+                    where: { userID },
+                    data: {
+                        pin
+                    }
+                })
             }
         })
         t.field("updateAllContentUserProfile", {
