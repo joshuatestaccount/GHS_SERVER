@@ -305,9 +305,26 @@ export const jobMutation = extendType({
                 const token = req.cookies[ "ghs_access_token" ];
                 const { userID, role } = verify(token, "HeadStart") as JwtPayload
                 if (userID && role === "administrator" || "manager" || "moderator") {
-                    return await prisma.jobPost.delete({
-                        where: { jobPostID }
+
+
+
+                    const job = await prisma.jobPost.delete({
+                        where: { jobPostID }, include: {
+                            Notification: true
+                        }
                     })
+
+                    await prisma.notification.update({
+                        data: {
+                            notificationStatus: "read"
+                        },
+                        where: {
+                            notificationID: job.notificationID
+                        }
+                    })
+
+
+
                 }
 
 

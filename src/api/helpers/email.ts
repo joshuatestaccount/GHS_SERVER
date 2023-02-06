@@ -22,7 +22,7 @@ export async function GESend(Email: string, message: string, subject: string) {
         service: "gmail",
         auth: {
             type: "OAuth2",
-            user: process.env.GMAIL_ACCOUNT,    //gmail account you useds to set the project up in google cloud console.
+            user: process.env.GMAIL_ACCOUNT, //gmail account you useds to set the project up in google cloud console.
             clientId: process.env.GMAIL_CLIENTID, // ClientID 
             clientSecret: process.env.GMAIL_CLIENTSECRET, // Client Secret
             refreshToken: process.env.GMAIL_REFRESHTOKEN, // Refresh Token

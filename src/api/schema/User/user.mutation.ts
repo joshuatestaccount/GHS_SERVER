@@ -71,11 +71,12 @@ export const userMutation = extendType({
                             userID
                         },
                         include: {
-                            Company: true
+                            Company: true,
+                            Profile: true
                         }
                     })
                     if (role === "employer") {
-                        return await prisma.user.create({
+                        const en = await prisma.user.create({
                             data: {
                                 email, password: pass, role: role as any,
                                 Profile: {
@@ -92,8 +93,24 @@ export const userMutation = extendType({
                                 createdAt: Dates, updatedAt: Dates,
                             }
                         })
+                        await prisma.logs.create({
+                            data: {
+                                createdAt: new Date(Date.now()),
+                                modifiedBy: `${users.Profile.firstname} ${users.Profile.lastname}`,
+                                title: "Created new User",
+                                User: {
+                                    connect: {
+                                        userID
+                                    }
+                                }
+                            },
+
+                        })
+                        return en
                     } else {
-                        return await prisma.user.create({
+
+
+                        const en = await prisma.user.create({
                             data: {
                                 email, password: pass, role: role as any,
                                 Profile: {
@@ -110,7 +127,24 @@ export const userMutation = extendType({
                                 createdAt: Dates, updatedAt: Dates,
                             }
                         })
+
+                        await prisma.logs.create({
+                            data: {
+                                createdAt: new Date(Date.now()),
+                                modifiedBy: `${users.Profile.firstname} ${users.Profile.lastname}`,
+                                title: "Created new User",
+                                User: {
+                                    connect: {
+                                        userID
+                                    }
+                                }
+                            },
+
+                        })
+                        return en
                     }
+
+
                 }
             }
         })
