@@ -35,11 +35,11 @@ export default async function googleCalendar(start: string, end: string, email: 
             requestBody: {
                 summary: "Job Application Interview",
                 start: {
-                    date: start,
+                    dateTime: start,
                     timeZone: "Asia/Manila"
                 },
                 end: {
-                    date: end,
+                    dateTime: end,
                     timeZone: "Asia/Manila"
                 },
                 conferenceData: {
@@ -49,12 +49,12 @@ export default async function googleCalendar(start: string, end: string, email: 
                     },
 
                 },
-                'recurrence': [
+                recurrence: [
                     'RRULE:FREQ=DAILY;COUNT=2'
                 ],
                 status: "confirmed",
                 attendees: [ {
-                    email: email
+                    email: `${email}`
                 } ],
                 reminders: {
                     useDefault: false,
