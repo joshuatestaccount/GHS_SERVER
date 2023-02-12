@@ -2,7 +2,6 @@ import { GraphQLError } from 'graphql'
 import { extendType, idArg, nonNull, stringArg } from 'nexus'
 import { prisma } from '../../../server.js'
 import { AWSFileUpload, AWSVideoUpload } from '../../helpers/awsFileUpload.js'
-import { Dates } from '../../helpers/dateFormat.js'
 import { generateUUID } from '../../helpers/generateUUID.js'
 import signature from 'jsonwebtoken'
 import { GESend } from '../../helpers/email.js'
@@ -25,8 +24,8 @@ export const applicaitonMutation = extendType({
                         data: {
                             email,
                             id: generateUUID(new Date().getTime()),
-                            createdAt: Dates,
-                            updatedAt: Dates,
+                            createdAt: new Date(Date.now()),
+                            updatedAt: new Date(Date.now()),
                             status: "waiting",
                             FileUpload: {
                                 create: {
@@ -68,7 +67,7 @@ export const applicaitonMutation = extendType({
                     await prisma.notification.create({
                         data: {
                             title: "New Applicant",
-                            createdAt: Dates,
+                            createdAt: new Date(Date.now()),
                             notificationStatus: "unread",
                             Applicant: {
                                 connect: {
@@ -113,7 +112,7 @@ export const applicaitonMutation = extendType({
                 await prisma.logs.create({
                     data: {
                         title: "Applicant Status updated",
-                        createdAt: Dates,
+                        createdAt: new Date(Date.now()),
                         modifiedBy: `${findUser.Profile.firstname} ${findUser.Profile.lastname}`,
                         User: {
                             connect: {
@@ -132,8 +131,8 @@ export const applicaitonMutation = extendType({
                             },
                             Endorsement: {
                                 create: {
-                                    createdAt: Dates,
-                                    updatedAt: Dates,
+                                    createdAt: new Date(Date.now()),
+                                    updatedAt: new Date(Date.now()),
                                     Status: "Waiting",
                                     Company: {
                                         connect: {

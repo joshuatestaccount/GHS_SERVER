@@ -3,7 +3,6 @@ import bcrypt from 'bcryptjs'
 import { prisma, pubsub } from '../../../server.js'
 import signature, { JwtPayload } from 'jsonwebtoken'
 import { GraphQLError } from 'graphql'
-import { Dates } from '../../helpers/dateFormat.js'
 import { GESend } from '../../helpers/email.js'
 
 const { sign, verify } = signature
@@ -31,7 +30,7 @@ export const userMutation = extendType({
                         data: {
                             email, password: pass,
                             role: "administrator",
-                            createdAt: Dates, updatedAt: Dates,
+                            createdAt: new Date(Date.now()), updatedAt: new Date(Date.now()),
                             Company: {
                                 create: {
                                     companyName,
@@ -90,7 +89,7 @@ export const userMutation = extendType({
                                     }
                                 },
 
-                                createdAt: Dates, updatedAt: Dates,
+                                createdAt: new Date(Date.now()), updatedAt: new Date(Date.now()),
                             }
                         })
                         await prisma.logs.create({
@@ -124,7 +123,7 @@ export const userMutation = extendType({
                                     }
                                 },
 
-                                createdAt: Dates, updatedAt: Dates,
+                                createdAt: new Date(Date.now()), updatedAt: new Date(Date.now()),
                             }
                         })
 
@@ -198,7 +197,7 @@ export const userMutation = extendType({
                                 userID: user.userID
                             }
                         },
-                        createdAt: Dates,
+                        createdAt: new Date(Date.now()),
                     }
                 })
 
@@ -227,7 +226,7 @@ export const userMutation = extendType({
                     const user = await prisma.user.update({
                         data: {
                             email,
-                            updatedAt: Dates,
+                            updatedAt: new Date(Date.now()),
                             Profile: {
                                 update: {
                                     firstname, birthday, lastname, phone,
@@ -256,7 +255,7 @@ export const userMutation = extendType({
                     await prisma.logs.create({
                         data: {
                             title: "Profile Update",
-                            createdAt: Dates,
+                            createdAt: new Date(Date.now()),
                             modifiedBy: `${user.Profile.firstname} ${user.Profile.lastname}`,
                             User: {
                                 connect: {
@@ -304,7 +303,7 @@ export const userMutation = extendType({
                             where: { userID },
                             data: {
                                 password: pass,
-                                updatedAt: Dates
+                                updatedAt: new Date(Date.now())
                             }
                         })
 
@@ -314,7 +313,7 @@ export const userMutation = extendType({
                             data: {
                                 title: "Changed Password",
                                 modifiedBy: `${findUser.Profile.firstname} ${findUser.Profile.lastname}`,
-                                createdAt: Dates,
+                                createdAt: new Date(Date.now()),
                                 User: {
                                     connect: {
                                         userID
@@ -353,7 +352,7 @@ export const userMutation = extendType({
                 await prisma.logs.create({
                     data: {
                         title: "You Changed your password",
-                        createdAt: Dates,
+                        createdAt: new Date(Date.now()),
                         modifiedBy: `${user.Profile.firstname} ${user.Profile.lastname}`,
                         User: {
                             connect: {

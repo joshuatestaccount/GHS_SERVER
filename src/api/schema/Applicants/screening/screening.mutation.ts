@@ -1,6 +1,5 @@
 import { extendType, idArg, nonNull, stringArg } from 'nexus'
 import { prisma } from '../../../../server.js'
-import { Dates } from '../../../helpers/dateFormat.js'
 import googleCalendar from '../../../helpers/calendar.js'
 
 
@@ -33,12 +32,13 @@ export const screeningMutation = extendType({
                         }
                     })
 
-                    googleCalendar(start, end, applicant.email)
+                    console.log(new Date(start).toISOString(), new Date(end).toISOString())
+                     googleCalendar(start, end, applicant.email)
 
 
                     await prisma.logs.create({
                         data: {
-                            createdAt: Dates,
+                            createdAt: new Date(Date.now()),
                             modifiedBy: `${user.Profile.firstname} ${user.Profile.lastname}`,
                             title: "Create Interview Link",
                             User: {
@@ -51,7 +51,7 @@ export const screeningMutation = extendType({
 
                     return await prisma.screening.create({
                         data: {
-                            DateTime: Dates,
+                            DateTime: new Date(Date.now()),
                             Applicant: {
                                 connect: {
                                     applicantID: applicant.applicantID

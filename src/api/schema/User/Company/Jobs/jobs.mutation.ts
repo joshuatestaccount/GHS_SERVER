@@ -2,7 +2,6 @@ import { GraphQLError } from 'graphql';
 import Authorized, { JwtPayload } from 'jsonwebtoken';
 import { extendType, idArg, nonNull } from 'nexus'
 import { prisma, pubsub } from '../../../../../server.js'
-import { Dates } from '../../../../helpers/dateFormat.js';
 const { verify } = Authorized
 
 export const jobMutation = extendType({
@@ -38,8 +37,8 @@ export const jobMutation = extendType({
                                 qualification,
                                 responsibilities,
                                 status: "inProgress",
-                                updatedAt: Dates,
-                                createdAt: Dates,
+                                updatedAt:  new Date(Date.now()),
+                                createdAt:  new Date(Date.now()),
                                 Company: {
                                     connect: {
                                         companyID: adminID.companyID
@@ -64,7 +63,7 @@ export const jobMutation = extendType({
                         const notifSub = await prisma.notification.create({
                             data: {
                                 title: "New Job Post",
-                                createdAt: Dates,
+                                createdAt:  new Date(Date.now()),
                                 JobPost: {
                                     connect: {
                                         jobPostID: jobPost.jobPostID
@@ -82,7 +81,7 @@ export const jobMutation = extendType({
                             data: {
                                 title: "Create Job Post",
                                 modifiedBy: `${user.Profile.firstname} ${user.Profile.lastname}`,
-                                createdAt: Dates,
+                                createdAt:  new Date(Date.now()),
                                 User: {
                                     connect: {
                                         userID
@@ -127,7 +126,7 @@ export const jobMutation = extendType({
                             data: {
                                 title: "Create Job Post",
                                 modifiedBy: `${user.Profile.firstname} ${user.Profile.lastname}`,
-                                createdAt: Dates,
+                                createdAt:  new Date(Date.now()),
                                 User: {
                                     connect: {
                                         userID
@@ -151,8 +150,8 @@ export const jobMutation = extendType({
                                 qualification,
                                 responsibilities,
                                 status: "approved",
-                                createdAt: Dates,
-                                updatedAt: Dates,
+                                createdAt:  new Date(Date.now()),
+                                updatedAt:  new Date(Date.now()),
                                 Company: {
                                     connect: {
                                         companyID: adminID.companyID
@@ -232,7 +231,7 @@ export const jobMutation = extendType({
                             data: {
                                 title: "Update Job Post Status",
                                 modifiedBy: `${user.Profile.firstname} ${user.Profile.lastname}`,
-                                createdAt: Dates,
+                                createdAt:  new Date(Date.now()),
                                 User: {
                                     connect: {
                                         userID
@@ -268,7 +267,7 @@ export const jobMutation = extendType({
                     const post = await prisma.jobPost.update({
                         data: {
                             description, qualification, responsibilities, title,
-                            updatedAt: Dates,
+                            updatedAt:  new Date(Date.now()),
                             details: {
                                 update: {
                                     jobType, location, salary, category, workType
@@ -283,7 +282,7 @@ export const jobMutation = extendType({
                         data: {
                             title: "Update Job Post",
                             modifiedBy: `${user.Profile.firstname} ${user.Profile.lastname}`,
-                            createdAt: Dates,
+                            createdAt:  new Date(Date.now()),
                             User: {
                                 connect: {
                                     userID

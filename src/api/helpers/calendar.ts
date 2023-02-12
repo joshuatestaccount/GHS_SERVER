@@ -35,11 +35,11 @@ export default async function googleCalendar(start: string, end: string, email: 
             requestBody: {
                 summary: "Job Application Interview",
                 start: {
-                    dateTime: start,
+                    dateTime: new Date(start).toISOString(),
                     timeZone: "Asia/Manila"
                 },
                 end: {
-                    dateTime: end,
+                    dateTime: new Date(end).toISOString(),
                     timeZone: "Asia/Manila"
                 },
                 conferenceData: {
@@ -54,7 +54,7 @@ export default async function googleCalendar(start: string, end: string, email: 
                 ],
                 status: "confirmed",
                 attendees: [ {
-                    email: `${email}`
+                    email: email
                 } ],
                 reminders: {
                     useDefault: false,

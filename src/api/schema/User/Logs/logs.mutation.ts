@@ -23,7 +23,7 @@ export const logMutation = extendType({
                 return await prisma.logs.create({
                     data: {
                         title: "Logout",
-                        createdAt: Dates,
+                        createdAt: new Date(Date.now()),
                         modifiedBy: `${users.Profile.firstname} ${users.Profile.lastname}`,
                         User: {
                             connect: {

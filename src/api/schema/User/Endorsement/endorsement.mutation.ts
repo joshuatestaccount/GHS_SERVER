@@ -2,7 +2,6 @@ import { GraphQLError } from 'graphql'
 import Auth, { JwtPayload } from 'jsonwebtoken'
 import { extendType, idArg, nonNull, stringArg } from 'nexus'
 import { prisma, pubsub } from '../../../../server.js'
-import { Dates } from '../../../helpers/dateFormat.js'
 
 const { verify } = Auth
 
@@ -38,7 +37,7 @@ export const endorsementMutation = extendType({
                             data: {
                                 title: "Update Endorsement Status",
                                 modifiedBy: `${user.Profile.firstname} ${user.Profile.lastname}`,
-                                createdAt: Dates,
+                                createdAt: new Date(Date.now()),
                                 User: {
                                     connect: {
                                         userID
