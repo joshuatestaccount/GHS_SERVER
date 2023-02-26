@@ -20,8 +20,8 @@ model User {
   email        String         @unique
   password     String
   role         Role
-  createdAt    DateTime       @db.Date
-  updatedAt    DateTime       @db.Date
+  createdAt    DateTime       @db.Timestamp()
+  updatedAt    DateTime       @db.Timestamp()
   companyID    String
   pin          String         @default("0000")
   Company      Company        @relation(fields: [companyID], references: [companyID])
@@ -49,7 +49,7 @@ model Notification {
   notificationID     String             @id @default(cuid())
   title              String
   notificationStatus notificationStatus @default(unread)
-  createdAt          DateTime           @db.Date
+  createdAt          DateTime           @db.Timestamp()
   userID             String?
   User               User?              @relation(fields: [userID], references: [userID], onDelete: Cascade)
   JobPost            JobPost?
@@ -61,7 +61,7 @@ model Profile {
   firstname   String
   lastname    String
   phone       String
-  birthday    DateTime?  @db.Date
+  birthday    DateTime?  @db.Timestamp()
   applicantID String?    @unique
   userID      String?    @unique
   Applicant   Applicant? @relation(fields: [applicantID], references: [applicantID], onDelete: Cascade)
@@ -106,8 +106,8 @@ model Comment {
   commentID     String       @id @default(cuid())
   message       String
   notes         String
-  createdAt     DateTime     @db.Date
-  updatedAt     DateTime     @db.Date
+  createdAt     DateTime     @db.Timestamp()
+  updatedAt     DateTime     @db.Timestamp()
   endorsementID String?      @unique
   userID        String?      @unique
   Endorsement   Endorsement? @relation(fields: [endorsementID], references: [endorsementID], onDelete: Cascade)
@@ -117,8 +117,8 @@ model Comment {
 model Endorsement {
   endorsementID String      @id @default(cuid())
   Status        String
-  createdAt     DateTime    @db.Date
-  updatedAt     DateTime    @db.Date
+  createdAt     DateTime    @db.Timestamp()
+  updatedAt     DateTime    @db.Timestamp()
   userID        String?
   companyID     String?
   Company       Company?    @relation(fields: [companyID], references: [companyID])
@@ -132,7 +132,7 @@ model Endorse {
   endorseID     String        @id @default(cuid())
   endorseStatus endorseStatus @default(waiting)
   userID        String
-  createdAt     DateTime      @db.Date
+  createdAt     DateTime      @db.Timestamp()
   User          User          @relation(fields: [userID], references: [userID])
   feedback      Feedback[]
   Company       Company?      @relation(fields: [companyID], references: [companyID])
@@ -164,8 +164,8 @@ model Applicant {
   applicantID    String          @id @default(uuid())
   id             String          @unique
   email          String
-  createdAt      DateTime        @db.Date
-  updatedAt      DateTime        @db.Date
+  createdAt      DateTime        @db.Timestamp()
+  updatedAt      DateTime        @db.Timestamp()
   status         applicantStatus @default(waiting)
   jobPostID      String
   interviewerID  String?         @unique
@@ -194,7 +194,7 @@ model UploadFile {
   uploadFileID String     @id @default(cuid())
   file         String
   video        String
-  createdAt    DateTime   @db.Date
+  createdAt    DateTime   @db.Timestamp()
   applicantID  String?    @unique
   Applicant    Applicant? @relation(fields: [applicantID], references: [applicantID], onDelete: Cascade)
 }
@@ -206,8 +206,8 @@ model JobPost {
   qualification    String
   responsibilities String
   status           JobStatus
-  createdAt        DateTime      @db.Date
-  updatedAt        DateTime      @db.Date
+  createdAt        DateTime      @db.Timestamp()
+  updatedAt        DateTime      @db.Timestamp()
   companyID        String
   notificationID   String?       @unique
   userID           String

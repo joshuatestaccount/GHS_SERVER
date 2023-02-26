@@ -14,8 +14,8 @@ export const applicationObject = objectType({
         t.string("id");
         t.string("status");
         t.email("email");
-        t.date("createdAt");
-        t.date("updatedAt");
+        t.datetime("createdAt");
+        t.datetime("updatedAt");
         t.list.field("applicantProfile", {
             type: "profile",
             resolve: async (parent): Promise<any> => {

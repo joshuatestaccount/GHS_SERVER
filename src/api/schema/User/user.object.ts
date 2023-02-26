@@ -25,8 +25,8 @@ export const userObject = objectType({
         t.id("userID");
         t.email("email");
         t.string("role")
-        t.date("createdAt");
-        t.date("updatedAt");
+        t.datetime("createdAt");
+        t.datetime("updatedAt");
         t.list.field("endorsement", {
             type: "endorsement",
             resolve: async (parent): Promise<any> => {

@@ -83,7 +83,6 @@ type Mutation {
   updateAllContentUserProfile(Address: AddressInput, email: EmailAddress, profile: ProfileInput, userID: ID!): user
   updateApplicantStatus(applicantID: ID!, status: String!, userID: ID!): application
   updateComment(comment: commentInput, commentID: ID!): comment
-  updateCompany(companyID: ID!): company
   updateEndorse(endorseID: ID!, endorseStatus: String!, userID: ID!): endorse
   updateEndorsement(Status: String!, endorsementID: ID!): endorsement
   updateJobPost(JobDetails: jobDetailsInput, JobPost: JobPostInput, jobPostID: ID!): JobPost
@@ -179,12 +178,12 @@ type application {
   applicantProfile: [profile]
   applicantUpload: [fileUpload]
   applyJobPost: [JobPost]
-  createdAt: Date
+  createdAt: DateTime
   email: EmailAddress
   endorseFeedback: [feedback]
   id: String
   status: String
-  updatedAt: Date
+  updatedAt: DateTime
 }
 
 enum applicationStatus {
@@ -355,13 +354,13 @@ type token {
 
 type user {
   company: [company]
-  createdAt: Date
+  createdAt: DateTime
   email: EmailAddress
   endorsement: [endorsement]
   logs: [logs]
   notification: [notification]
   profile: [profile]
   role: String
-  updatedAt: Date
+  updatedAt: DateTime
   userID: ID
 }

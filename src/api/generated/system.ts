@@ -141,11 +141,11 @@ export interface NexusGenObjects {
   }
   application: { // root type
     applicantID?: string | null; // ID
-    createdAt?: NexusGenScalars['Date'] | null; // Date
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     email?: NexusGenScalars['EmailAddress'] | null; // EmailAddress
     id?: string | null; // String
     status?: string | null; // String
-    updatedAt?: NexusGenScalars['Date'] | null; // Date
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
   }
   comment: { // root type
     commentID?: string | null; // ID
@@ -233,10 +233,10 @@ export interface NexusGenObjects {
     token?: string | null; // String
   }
   user: { // root type
-    createdAt?: NexusGenScalars['Date'] | null; // Date
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     email?: NexusGenScalars['EmailAddress'] | null; // EmailAddress
     role?: string | null; // String
-    updatedAt?: NexusGenScalars['Date'] | null; // Date
+    updatedAt?: NexusGenScalars['DateTime'] | null; // DateTime
     userID?: string | null; // ID
   }
 }
@@ -293,7 +293,6 @@ export interface NexusGenFieldTypes {
     updateAllContentUserProfile: NexusGenRootTypes['user'] | null; // user
     updateApplicantStatus: NexusGenRootTypes['application'] | null; // application
     updateComment: NexusGenRootTypes['comment'] | null; // comment
-    updateCompany: NexusGenRootTypes['company'] | null; // company
     updateEndorse: NexusGenRootTypes['endorse'] | null; // endorse
     updateEndorsement: NexusGenRootTypes['endorsement'] | null; // endorsement
     updateJobPost: NexusGenRootTypes['JobPost'] | null; // JobPost
@@ -370,12 +369,12 @@ export interface NexusGenFieldTypes {
     applicantProfile: Array<NexusGenRootTypes['profile'] | null> | null; // [profile]
     applicantUpload: Array<NexusGenRootTypes['fileUpload'] | null> | null; // [fileUpload]
     applyJobPost: Array<NexusGenRootTypes['JobPost'] | null> | null; // [JobPost]
-    createdAt: NexusGenScalars['Date'] | null; // Date
+    createdAt: NexusGenScalars['DateTime'] | null; // DateTime
     email: NexusGenScalars['EmailAddress'] | null; // EmailAddress
     endorseFeedback: Array<NexusGenRootTypes['feedback'] | null> | null; // [feedback]
     id: string | null; // String
     status: string | null; // String
-    updatedAt: NexusGenScalars['Date'] | null; // Date
+    updatedAt: NexusGenScalars['DateTime'] | null; // DateTime
   }
   comment: { // field return type
     commentID: string | null; // ID
@@ -490,14 +489,14 @@ export interface NexusGenFieldTypes {
   }
   user: { // field return type
     company: Array<NexusGenRootTypes['company'] | null> | null; // [company]
-    createdAt: NexusGenScalars['Date'] | null; // Date
+    createdAt: NexusGenScalars['DateTime'] | null; // DateTime
     email: NexusGenScalars['EmailAddress'] | null; // EmailAddress
     endorsement: Array<NexusGenRootTypes['endorsement'] | null> | null; // [endorsement]
     logs: Array<NexusGenRootTypes['logs'] | null> | null; // [logs]
     notification: Array<NexusGenRootTypes['notification'] | null> | null; // [notification]
     profile: Array<NexusGenRootTypes['profile'] | null> | null; // [profile]
     role: string | null; // String
-    updatedAt: NexusGenScalars['Date'] | null; // Date
+    updatedAt: NexusGenScalars['DateTime'] | null; // DateTime
     userID: string | null; // ID
   }
 }
@@ -544,7 +543,6 @@ export interface NexusGenFieldTypeNames {
     updateAllContentUserProfile: 'user'
     updateApplicantStatus: 'application'
     updateComment: 'comment'
-    updateCompany: 'company'
     updateEndorse: 'endorse'
     updateEndorsement: 'endorsement'
     updateJobPost: 'JobPost'
@@ -621,12 +619,12 @@ export interface NexusGenFieldTypeNames {
     applicantProfile: 'profile'
     applicantUpload: 'fileUpload'
     applyJobPost: 'JobPost'
-    createdAt: 'Date'
+    createdAt: 'DateTime'
     email: 'EmailAddress'
     endorseFeedback: 'feedback'
     id: 'String'
     status: 'String'
-    updatedAt: 'Date'
+    updatedAt: 'DateTime'
   }
   comment: { // field return type name
     commentID: 'ID'
@@ -741,14 +739,14 @@ export interface NexusGenFieldTypeNames {
   }
   user: { // field return type name
     company: 'company'
-    createdAt: 'Date'
+    createdAt: 'DateTime'
     email: 'EmailAddress'
     endorsement: 'endorsement'
     logs: 'logs'
     notification: 'notification'
     profile: 'profile'
     role: 'String'
-    updatedAt: 'Date'
+    updatedAt: 'DateTime'
     userID: 'ID'
   }
 }
@@ -879,9 +877,6 @@ export interface NexusGenArgTypes {
     updateComment: { // args
       comment?: NexusGenInputs['commentInput'] | null; // commentInput
       commentID: string; // ID!
-    }
-    updateCompany: { // args
-      companyID: string; // ID!
     }
     updateEndorse: { // args
       endorseID: string; // ID!
