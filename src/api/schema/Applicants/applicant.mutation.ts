@@ -156,14 +156,15 @@ export const applicaitonMutation = extendType({
                             applicantID
                         },
                         include: {
-                            Profile: true
-                        }
+                            Profile: true,
+                            JobPost: true
+                        },
                     })
 
                     GESend(app.email, ` Dear Mr./Ms. ${app.Profile.lastname} 
                     Congratulations!
 
-                    We are pleased to inform you that your application for the [job title] position at [company name] has been approved. Our recruitment team will contact you for further details and instructions.
+                    We are pleased to inform you that your application for the ${app.JobPost.title} position at Global Headstart Specialist has been approved. Our recruitment team will contact you for further details and instructions.
                     
                     We appreciate your interest in working with us and look forward to working with you soon.
                     

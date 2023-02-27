@@ -10,7 +10,10 @@ export const notificationQuery = extendType({
             resolve: async (): Promise<any> => {
                 return await prisma.notification.findMany({
                     where: {
-                        notificationStatus: "unread"
+                        notificationStatus: "unread",
+                    },
+                    orderBy: {
+                        createdAt: "desc"
                     }
                 })
             }
