@@ -74,7 +74,7 @@ export const endorseMutation = extendType({
 
                     await prisma.logs.create({
                         data: {
-                            title: "Create Endorse",
+                            title: "Endorsed an Applicant",
                             modifiedBy: `${user.Profile.firstname} ${user.Profile.lastname}`,
                             createdAt: Dates,
                             User: {

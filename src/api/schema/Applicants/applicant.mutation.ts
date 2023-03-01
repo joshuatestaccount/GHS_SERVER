@@ -178,6 +178,7 @@ export const applicaitonMutation = extendType({
                     
                     
                     Regards, 
+                    Global Headstart Specailist Inc.
                     `, "Endorsement")
 
                     return app
@@ -214,6 +215,8 @@ export const applicaitonMutation = extendType({
                     
                     
                     Regards, 
+                    
+                    Global Headstart Specailist Inc.
                     .`, "Applicantion Rejected")
 
 
