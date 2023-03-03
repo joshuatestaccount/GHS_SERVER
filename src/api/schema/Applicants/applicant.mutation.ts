@@ -169,7 +169,8 @@ export const applicaitonMutation = extendType({
                     We appreciate your interest in working with us and look forward to working with you soon.
                     
                     
-                    Regards, 
+                    Regards,    
+                    Global Headstart Specailist Inc.
                     `, "Application Approved")
 
                     GESend(app.email, `Dear Mr./Ms. ${app.Profile.lastname}  We inform you that your application has been approved for endorsement by other companies. Please check your application status on your account.

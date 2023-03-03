@@ -160,13 +160,11 @@ export const userMutation = extendType({
                     }
                 })
 
-
-
                 if (!user) throw new GraphQLError("Email address is not found")
                 const valid = await bcrypt.compare(password, user.password)
                 if (!valid) throw new GraphQLError("Invalid Credentials");
 
-                if (user.pin !== pin) throw new GraphQLError("Try your pin again")
+                if (user.pin !== pin) throw new GraphQLError("PIN Mismatch")
 
                 const token = sign({ userID: user.userID, role: user.role }, "HeadStart", {
                     algorithm: "HS512",
@@ -206,9 +204,9 @@ export const userMutation = extendType({
         })
         t.field("changePin", {
             type: "user",
-            args: { pin: nonNull(intArg()), rePin: nonNull(intArg()), userID: nonNull(idArg()) },
+            args: { pin: nonNull(stringArg()), rePin: nonNull(stringArg()), userID: nonNull(idArg()) },
             resolve: async (_, { userID, pin, rePin }: any): Promise<any> => {
-                if (rePin !== pin) throw new GraphQLError("Pin is not matched")
+                if (rePin !== pin) throw new GraphQLError("Pin matched.")
 
                 return await prisma.user.update({
                     where: { userID },

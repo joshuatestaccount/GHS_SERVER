@@ -57,7 +57,7 @@ input JobPostInput {
 }
 
 type Mutation {
-  changePin(pin: Int!, rePin: Int!, userID: ID!): user
+  changePin(pin: String!, rePin: String!, userID: ID!): user
   createAFeedback(applicantID: ID!, endorseID: ID!, feedback: String!, userID: ID!): feedback
   createAJobForAMM(JobDetails: jobDetailsInput, JobPost: JobPostInput, userID: ID!): JobPost
   createAJobForRecruiter(JobDetails: jobDetailsInput, JobPost: JobPostInput, userID: ID!): JobPost

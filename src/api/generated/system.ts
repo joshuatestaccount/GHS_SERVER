@@ -754,8 +754,8 @@ export interface NexusGenFieldTypeNames {
 export interface NexusGenArgTypes {
   Mutation: {
     changePin: { // args
-      pin: number; // Int!
-      rePin: number; // Int!
+      pin: string; // String!
+      rePin: string; // String!
       userID: string; // ID!
     }
     createAFeedback: { // args
