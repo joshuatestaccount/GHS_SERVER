@@ -213,7 +213,7 @@ model JobPost {
   userID           String
   Company          Company       @relation(fields: [companyID], references: [companyID], onDelete: Cascade)
   Notification     Notification? @relation(fields: [notificationID], references: [notificationID], onDelete: Cascade)
-  User             User          @relation(fields: [userID], references: [userID])
+  User             User          @relation(fields: [userID], references: [userID], onDelete: Cascade)
   Applicants       Applicant[]
   details          JobDetails?
 }
