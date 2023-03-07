@@ -1,6 +1,7 @@
 import { extendType, idArg, nonNull, stringArg } from 'nexus'
 import { prisma } from '../../../../server.js'
 import googleCalendar from '../../../helpers/calendar.js'
+import { Recipient } from '../../../helpers/email.js'
 
 
 
@@ -18,8 +19,11 @@ export const screeningMutation = extendType({
                             applicantID,
                         },
                         select: {
+                            id: true,
                             applicantID: true,
-                            email: true
+                            email: true,
+                            interviewer: true,
+                            Profile: true
                         }
                     })
 
@@ -32,9 +36,17 @@ export const screeningMutation = extendType({
                         }
                     })
 
-                    console.log(new Date(start).toISOString(), new Date(end).toISOString())
-                     googleCalendar(start, end, applicant.email)
+                    const userInt = await prisma.interviewer.findUnique({
+                        where: { interviewerID: applicant.interviewer.interviewerID },
+                        include: {
+                            User: true,
+                        }
+                    })
 
+                    console.log(new Date(start).toISOString(), new Date(end).toISOString())
+                    googleCalendar(start, end, applicant.email)
+
+                    Recipient(userInt.User.email, `Here is the interview link of ${applicant.Profile.firstname} ${applicant.Profile.lastname} - ${applicant.id} scheduled on ${start}-${end}`, "Applicant Interview link")
 
                     await prisma.logs.create({
                         data: {

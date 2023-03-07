@@ -77,17 +77,8 @@ export const applicaitonMutation = extendType({
                         }
                     })
 
-                    GESend(email, `Dear Mr/Ms ${app.Profile.lastname}
-                    Your application for the position of ${app.JobPost.title} at Global Headstart Specialist Inc. has been received. Our hiring team is currently reviewing all applications for this position. If you are one of the qualifying applicants to proceed to the interview process, our recruiters will contact you for your interview schedule. 
-
-                    Kindly anticipate hearing from us soon regarding the status of your application.
-                    
-                    Thank you for your interest in our company, and we appreciate the time you invested in this application.
-                    
-                    Your Application ID: ${app.id}
-                    
-                    Regards,  
-                    `, "Application Receieved")
+                    GESend(email, `Dear Mr/Ms ${app.Profile.lastname}<br>Your application for the position of ${app.JobPost.title} at Global Headstart Specialist Inc. has been received. Our hiring team is currently reviewing all applications for this position. If you are one of the qualifying applicants to proceed to the interview process, our recruiters will contact you for your interview schedule. <br> Kindly anticipate hearing from us soon regarding the status of your application.<br>Thank you for your interest in our company, and we appreciate the time you invested in this application.<br>Your Application ID: ${app.id} <br> <br>Regards,  <Br>Global Headstart Specailist Inc.
+                    `, "Application Received")
 
                     return app
                 })
@@ -161,25 +152,10 @@ export const applicaitonMutation = extendType({
                         },
                     })
 
-                    GESend(app.email, ` Dear Mr./Ms. ${app.Profile.lastname} 
-                    Congratulations!
-
-                    We are pleased to inform you that your application for the ${app.JobPost.title} position at Global Headstart Specialist has been approved. Our recruitment team will contact you for further details and instructions.
-                    
-                    We appreciate your interest in working with us and look forward to working with you soon.
-                    
-                    
-                    Regards,    
-                    Global Headstart Specailist Inc.
+                    GESend(app.email, ` Dear Mr./Ms. ${app.Profile.lastname}, <br>Congratulations!<br>We are pleased to inform you that your application for the ${app.JobPost.title} position at Global Headstart Specialist has been approved. Our recruitment team will contact you for further details and instructions.<br>We appreciate your interest in working with us and look forward to working with you soon.<br><br>Regards,<br>Global Headstart Specailist Inc.
                     `, "Application Approved")
 
-                    GESend(app.email, `Dear Mr./Ms. ${app.Profile.lastname}  We inform you that your application has been approved for endorsement by other companies. Please check your application status on your account.
-
-                    Kindly anticipate hearing from us soon regarding the status of your application and further instructions.
-                    
-                    
-                    Regards, 
-                    Global Headstart Specailist Inc.
+                    GESend(app.email, `Dear Mr./Ms. ${app.Profile.lastname}, <br>We inform you that your application has been approved for endorsement by other companies. Please check your application status on your account.<br>Kindly anticipate hearing from us soon regarding the status of your application and further instructions.<br>Regards,<br>Global Headstart Specailist Inc.
                     `, "Endorsement")
 
                     return app
@@ -209,16 +185,15 @@ export const applicaitonMutation = extendType({
                     })
 
                     GESend(app.email, `We carefully and thoroughly evaluated a significant number of applications; unfortunately, we won’t be able to invite you to the next stage of the hiring process at this time. Despite your impressive resume, we have decided to move forward with a candidate whose qualifications are better suited to this particular position.
-
+                    <br></br>
                     Please be informed that you will not be able to apply for another position for the next thirty (30) days. 
-                    
+                    <br></br>
                     Once again, thank you so much for taking the time to apply to our company. We wish you the best of luck and much success in your future endeavors.
-                    
+                    <br></br>
                     
                     Regards, 
-                    
-                    Global Headstart Specailist Inc.
-                    .`, "Applicantion Rejected")
+                    <br></br>
+                    Global Headstart Specailist Inc.`, "Applicantion Rejected")
 
 
                     return app
@@ -231,7 +206,7 @@ export const applicaitonMutation = extendType({
             resolve: async (_, { applicantID }): Promise<any> => {
                 return await prisma.applicant.delete({
                     where: {
-                        applicantID
+                        id: applicantID
                     }
                 })
             }

@@ -62,7 +62,7 @@ export const otpMutation = extendType({
                         otp
                     }
                 })
-                if (ottps.otp !== otp) throw new GraphQLError("OTP Mismatched")
+                if (!ottps) throw new GraphQLError("OTP Mismatched")
                 if (ottps.expiredAt.getTime() < new Date().getTime()) {
                     throw new GraphQLError("Your OTP is expired create a new one")
                 }

@@ -30,7 +30,8 @@ export const applicantsQuery = extendType({
                         status: status as any,
                         id: {
                             contains: search,
-                            mode: "insensitive"
+                            mode: "insensitive",
+                            
                         },
                     },
                     take: limit,
