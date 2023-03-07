@@ -48,7 +48,9 @@ export const otpMutation = extendType({
                     }
                 })
 
-                GESend(`${email}`, `Your OTP is ${otps.otp} it will expire in 3 minutes`, "Global Headstart Specialist OTP")
+                GESend(`${email}`, `
+                Good day! <br> <br> Your one-time password (OTP) is <b>${otps.otp}</b>. <br> It will expire in three (3) minutes. <br><br>Regards, <br>Global Headstart Specialist Inc.
+                `, "Global Headstart Specialist OTP")
 
                 return otps
             }
