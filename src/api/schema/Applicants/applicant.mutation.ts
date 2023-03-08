@@ -77,7 +77,7 @@ export const applicaitonMutation = extendType({
                         }
                     })
 
-                    GESend(email, `Dear Mr./Ms./Mrs. ${app.Profile.lastname},<br><br>Your application for the position of ${app.JobPost.title} at Global Headstart Specialist Inc. has been received. Our hiring team is currently reviewing all applications for this position. If you are one of the qualifying applicants to proceed to the interview process, our recruiters will contact you for your interview schedule. <br> Kindly anticipate hearing from us soon regarding the status of your application.<br>Thank you for your interest in our company, and we appreciate the time you invested in this application.<br>Your Application ID: ${app.id} <br> <br>Regards,  <br>Global Headstart Specailist Inc.
+                    GESend(email, `Dear Mr./Ms./Mrs. ${app.Profile.lastname},<br><br>Your application for the position of <b>${app.JobPost.title}</b> at <b>Global Headstart Specialist Inc.</b> has been received. Our hiring team is currently reviewing all applications for this position. If you are one of the qualifying applicants to proceed to the interview process, our recruiters will contact you for your interview schedule.<br><br> Kindly anticipate hearing from us soon regarding the status of your application.<br><br>Thank you for your interest in our company, and we appreciate the time you invested in this application.<br><br>Your Application ID: <b>${app.id}<b> <br> <br>Regards, <br><br>Global Headstart Specailist Inc.
                     `, "Application Received")
 
                     return app
@@ -152,10 +152,10 @@ export const applicaitonMutation = extendType({
                         },
                     })
 
-                    GESend(app.email, ` Dear Mr./Ms. ${app.Profile.lastname}, <br>Congratulations!<br>We are pleased to inform you that your application for the ${app.JobPost.title} position at Global Headstart Specialist has been approved. Our recruitment team will contact you for further details and instructions.<br>We appreciate your interest in working with us and look forward to working with you soon.<br><br>Regards,<br>Global Headstart Specailist Inc.
+                    GESend(app.email, `Dear Mr./Ms./Mrs. ${app.Profile.lastname}, <br><br>Congratulations!<br><br>We are pleased to inform you that your application for the <b>${app.JobPost.title}</b> position at <b>Global Headstart Specialist Inc.</b></br> has been approved. Our recruitment team will contact you for further details and instructions.<br><br>We appreciate your interest in working with us and look forward to working with you soon.<br><br>Regards,<br><br>Global Headstart Specailist Inc.
                     `, "Application Approved")
 
-                    GESend(app.email, `Dear Mr./Ms. ${app.Profile.lastname}, <br>We inform you that your application has been approved for endorsement by other companies. Please check your application status on your account.<br>Kindly anticipate hearing from us soon regarding the status of your application and further instructions.<br>Regards,<br>Global Headstart Specailist Inc.
+                    GESend(app.email, `Dear Mr./Ms. ${app.Profile.lastname},<br><br>We inform you that your application has been approved for endorsement by other companies. Please check your application status on your account.<br><br>Kindly anticipate hearing from us soon regarding the status of your application and further instructions.<br><br>Regards,<br><br>Global Headstart Specailist Inc.
                     `, "Endorsement")
 
                     return app
