@@ -35,6 +35,10 @@ export const endorseMutation = extendType({
                     const applicant = await prisma.applicant.findUnique({
                         where: {
                             applicantID: endorsement.Applicant[ 0 ].applicantID
+                        },
+                        include: {
+                            JobPost: true,
+                            Profile: true
                         }
                     })
 
@@ -66,7 +70,8 @@ export const endorseMutation = extendType({
                                         include: {
                                             Profile: true
                                         }
-                                    }
+                                    },
+                                    Company: true
                                 }
                             }
                         }
@@ -85,7 +90,8 @@ export const endorseMutation = extendType({
                         }
                     })
 
-                    GESend(applicant.email, ``, "Your application is being endorsed")
+                    GESend(applicant.email, `Dear Mr./Ms.Mrs. <b>${applicant.Profile.lastname}</b><br><br>Good Day, ${applicant.Profile.lastname}!<br><br>We are pleased to inform you that your application's endorsement to <b>${endorse.Endorsement[ 0 ].Company.companyName}</b> has been approved. Please check the progress of your application on your account.<br><br>Kindly anticipate hearing from us soon regarding the status of your application and further instructions.<br><br>Regards, <br><br><b>Global Headstart Specialist Inc.</b>
+                    ` , `${applicant.JobPost.title} is endorsed to ${endorse.Endorsement[ 0 ].Company.companyName}`)
                     return endorse
                 })
             }
@@ -109,6 +115,28 @@ export const endorseMutation = extendType({
                         },
                         where: {
                             endorseID
+                        },
+                        include: {
+                            Endorsement: true,
+
+                        }
+                    })
+
+
+                    const applicant = await prisma.endorsement.findMany({
+                        where: {
+                            Endorse: {
+                                some: {
+                                    endorseID
+                                }
+                            }
+                        },
+                        include: {
+                            Applicant: {
+                                include: {
+                                    Profile: true
+                                }
+                            }
                         }
                     })
 
@@ -125,6 +153,12 @@ export const endorseMutation = extendType({
                             }
                         }
                     })
+
+
+
+                    if (endorse.endorseStatus === "rejected") {
+                        GESend(applicant[ 0 ].Applicant[ 0 ].email, `Dear Mr./Ms.Mrs. <b>${applicant[0].Applicant[0].Profile.lastname}</b>`, ``)
+                    }
 
 
                     return endorse

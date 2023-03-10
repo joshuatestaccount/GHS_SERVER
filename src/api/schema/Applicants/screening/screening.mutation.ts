@@ -1,7 +1,7 @@
 import { extendType, idArg, nonNull, stringArg } from 'nexus'
 import { prisma } from '../../../../server.js'
 import googleCalendar from '../../../helpers/calendar.js'
-import { Recipient } from '../../../helpers/email.js'
+import { GESend, Recipient } from '../../../helpers/email.js'
 
 
 
@@ -23,7 +23,8 @@ export const screeningMutation = extendType({
                             applicantID: true,
                             email: true,
                             interviewer: true,
-                            Profile: true
+                            Profile: true,
+                            JobPost: true
                         }
                     })
 
@@ -39,14 +40,15 @@ export const screeningMutation = extendType({
                     const userInt = await prisma.interviewer.findUnique({
                         where: { interviewerID: applicant.interviewer.interviewerID },
                         include: {
-                            User: true,
+                            User: {
+                                include: {
+                                    Profile: true
+                                }
+                            },
                         }
                     })
 
-                    console.log(new Date(start).toISOString(), new Date(end).toISOString())
                     googleCalendar(start, end, applicant.email)
-
-                    Recipient(userInt.User.email, `Here is the interview link of ${applicant.Profile.firstname} ${applicant.Profile.lastname} - ${applicant.id} scheduled on ${start}-${end}`, "Applicant Interview link")
 
                     await prisma.logs.create({
                         data: {
@@ -61,7 +63,7 @@ export const screeningMutation = extendType({
                         }
                     })
 
-                    return await prisma.screening.create({
+                    const dateTime = await prisma.screening.create({
                         data: {
                             DateTime: new Date(Date.now()),
                             Applicant: {
@@ -76,6 +78,13 @@ export const screeningMutation = extendType({
                             }
                         }
                     })
+
+
+                    GESend(applicant.email, `Dear Mr./Ms./Mrs, ${applicant.Profile.lastname}, <br><br>Good day!<br><br>Thank you for applying for the <b>${applicant.JobPost.title}</b>.<br><br>We are pleased to inform you that your interview has been scheduled on ${start}-${end} with ${userInt.User.Profile.firstname} ${userInt.User.Profile.lastname} as the interviewer.<br><br>We look forward to meeting with you.<br><br>Regards, <br><br> <b>Global Headstart Specialist Inc.</b>
+                    `, `Interview Schedule for ${applicant.JobPost.title}`)
+                    Recipient(userInt.User.email, `Here is the interview link of ${applicant.Profile.firstname} ${applicant.Profile.lastname} - ${applicant.id} scheduled on ${start}-${end}`, "Applicant Interview link")
+
+                    return dateTime
                 })
             }
         })

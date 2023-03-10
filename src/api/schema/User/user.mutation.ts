@@ -74,6 +74,11 @@ export const userMutation = extendType({
                             Profile: true
                         }
                     })
+
+
+                    if (users.email === email) {
+                        throw new GraphQLError("Email address has already been used.")
+                    }
                     if (role === "employer") {
                         const en = await prisma.user.create({
                             data: {

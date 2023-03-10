@@ -77,7 +77,7 @@ export const applicaitonMutation = extendType({
                         }
                     })
 
-                    GESend(email, `Dear Mr./Ms./Mrs. ${app.Profile.lastname},<br><br>Your application for the position of <b>${app.JobPost.title}</b> at <b>Global Headstart Specialist Inc.</b> has been received. Our hiring team is currently reviewing all applications for this position. If you are one of the qualifying applicants to proceed to the interview process, our recruiters will contact you for your interview schedule.<br><br> Kindly anticipate hearing from us soon regarding the status of your application.<br><br>Thank you for your interest in our company, and we appreciate the time you invested in this application.<br><br>Your Application ID: <b>${app.id}<b> <br> <br>Regards, <br><br>Global Headstart Specailist Inc.
+                    GESend(email, `Dear Mr./Ms./Mrs. <b>${app.Profile.lastname}</b>,<br><br>Your application for the position of <b>${app.JobPost.title}</b> at <b>Global Headstart Specialist Inc.</b> has been received. Our hiring team is currently reviewing all applications for this position. If you are one of the qualifying applicants to proceed to the interview process, our recruiters will contact you for your interview schedule.<br><br> Kindly anticipate hearing from us soon regarding the status of your application.<br><br>Thank you for your interest in our company, and we appreciate the time you invested in this application.<br><br>Your Application ID: <b>${app.id}<b> <br> <br>Regards, <br><br>Global Headstart Specailist Inc.
                     `, "Application Received")
 
                     return app
@@ -113,8 +113,6 @@ export const applicaitonMutation = extendType({
                     }
                 })
                 if (status === "approved") {
-
-
                     const app = await prisma.applicant.update({
                         data: {
                             status: {
@@ -152,11 +150,11 @@ export const applicaitonMutation = extendType({
                         },
                     })
 
-                    GESend(app.email, `Dear Mr./Ms./Mrs. ${app.Profile.lastname}, <br><br>Congratulations!<br><br>We are pleased to inform you that your application for the <b>${app.JobPost.title}</b> position at <b>Global Headstart Specialist Inc.</b></br> has been approved. Our recruitment team will contact you for further details and instructions.<br><br>We appreciate your interest in working with us and look forward to working with you soon.<br><br>Regards,<br><br>Global Headstart Specailist Inc.
-                    `, "Application Approved")
+                    GESend(app.email, `Dear Mr./Ms./Mrs. <b>${app.Profile.lastname}</b>, <br><br>Congratulations!<br><br>We are pleased to inform you that your application for the <b>${app.JobPost.title}</b> position at <b>Global Headstart Specialist Inc.</b></br> has been approved. Our recruitment team will contact you for further details and instructions.<br><br>We appreciate your interest in working with us and look forward to working with you soon.<br><br>Regards,<br><br>Global Headstart Specailist Inc.
+                    `, "Application Statu")
 
-                    GESend(app.email, `Dear Mr./Ms. ${app.Profile.lastname},<br><br>We inform you that your application has been approved for endorsement by other companies. Please check your application status on your account.<br><br>Kindly anticipate hearing from us soon regarding the status of your application and further instructions.<br><br>Regards,<br><br>Global Headstart Specailist Inc.
-                    `, "Endorsement")
+                    GESend(app.email, `Dear Mr./Ms. <b>${app.Profile.lastname}</b>,<br><br>We inform you that your application has been approved for endorsement by other companies. Please check your application status on your account.<br><br>Kindly anticipate hearing from us soon regarding the status of your application and further instructions.<br><br>Regards,<br><br>Global Headstart Specailist Inc.
+                    `, "Application Endorsement Approved")
 
                     return app
 
@@ -184,11 +182,8 @@ export const applicaitonMutation = extendType({
                         }
                     })
 
-                    GESend(app.email, `We carefully and thoroughly evaluated a significant number of applications; unfortunately, we won’t be able to invite you to the next stage of the hiring process at this time. Despite your impressive resume, we have decided to move forward with a candidate whose qualifications are better suited to this particular position.
-                    <br></br>
-                    Please be informed that you will not be able to apply for another position for the next thirty (30) days. 
-                    <br></br>
-                    Once again, thank you so much for taking the time to apply to our company. We wish you the best of luck and much success in your future endeavors.
+                    GESend(app.email, `Dear Mr./Ms./Mrs <b>${app.Profile.lastname}</b>, <br><br>After carefully and thoroughly evaluating a significant number of applications; unfortunately, we won’t be able to invite you to the next stage of the hiring process at this time. Despite your impressive resume, we have decided to move forward with a candidate whose qualifications are better suited to this particular position.  <br><br> Please be informed that you will not be able to apply for another position for the next thirty (30) days. <br><br>Once again, thank you so much for taking the time to apply to our company. We wish you the best of luck and much success in your future endeavors.
+                    
                     <br></br>
                     
                     Regards, 
@@ -222,7 +217,7 @@ export const applicaitonMutation = extendType({
                     }
                 })
 
-                if (!findId) throw new GraphQLError("Applicant No. is invalid")
+                if (!findId) throw new GraphQLError("Invalid Applicant No.")
 
                 const token = sign({ applicantID: findId.id }, "HeadStart", {
                     algorithm: "HS512",
