@@ -76,7 +76,7 @@ export const userMutation = extendType({
                     })
 
 
-                    if (users.email === email) {
+                    if (users.email) {
                         throw new GraphQLError("Email address has already been used.")
                     }
                     if (role === "employer") {

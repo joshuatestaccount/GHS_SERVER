@@ -156,8 +156,12 @@ export const endorseMutation = extendType({
 
 
 
+                    if(endorse.endorseStatus === "approved") {
+                        
+                    }
+
                     if (endorse.endorseStatus === "rejected") {
-                        GESend(applicant[ 0 ].Applicant[ 0 ].email, `Dear Mr./Ms.Mrs. <b>${applicant[0].Applicant[0].Profile.lastname}</b>`, ``)
+                        GESend(applicant[ 0 ].Applicant[ 0 ].email, `Dear Mr./Ms.Mrs. <b>${applicant[ 0 ].Applicant[ 0 ].Profile.lastname}</b>`, ``)
                     }
 
 

@@ -18,7 +18,8 @@ export const interviewMutation = extendType({
                             applicantID
                         },
                         include: {
-                            Profile: true
+                            Profile: true,
+                            JobPost: true
                         }
                     })
                     const user = await prisma.user.findUnique({
@@ -41,6 +42,13 @@ export const interviewMutation = extendType({
                                 }
                             },
                             createdAt: Dates
+                        },
+                        include: {
+                            User: {
+                                include: {
+                                    Profile: true
+                                }
+                            }
                         }
                     })
                     await prisma.logs.create({
@@ -57,8 +65,7 @@ export const interviewMutation = extendType({
                     })
 
 
-                    GESend(app.email, `Dear Mr./Ms. ${app.Profile.lastname} 
-                    Your application is being reviewed...
+                    GESend(app.email, `Dear Mr./Ms./Mrs. ${app.Profile.lastname}, Your application for the position of <b>${app.JobPost.title}</b> has been received and is currently being reviewed by our recruiters. You are now pending for an interview with Mr./Ms./Mrs. <b>${interview.User.Profile.firstname} ${interview.User.Profile.lastname}</b>, the recruiter who has been assigned to you.<br><br> Kindly wait for more instrunctions and updates on the interview schedule.<br><br>Regards,<br><br> <b>Global Headstart Specialist Inc.</b>
                     `, `Your Application is being Reviewed`)
                     return interview
                 })

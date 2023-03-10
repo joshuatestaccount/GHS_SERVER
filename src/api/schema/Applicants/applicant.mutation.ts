@@ -77,7 +77,7 @@ export const applicaitonMutation = extendType({
                         }
                     })
 
-                    GESend(email, `Dear Mr./Ms./Mrs. <b>${app.Profile.lastname}</b>,<br><br>Your application for the position of <b>${app.JobPost.title}</b> at <b>Global Headstart Specialist Inc.</b> has been received. Our hiring team is currently reviewing all applications for this position. If you are one of the qualifying applicants to proceed to the interview process, our recruiters will contact you for your interview schedule.<br><br> Kindly anticipate hearing from us soon regarding the status of your application.<br><br>Thank you for your interest in our company, and we appreciate the time you invested in this application.<br><br>Your Application ID: <b>${app.id}<b> <br> <br>Regards, <br><br>Global Headstart Specailist Inc.
+                    GESend(email, `Dear Mr./Ms./Mrs. <b>${app.Profile.lastname}</b>,<br><br>Your application for the position of <b>${app.JobPost.title}</b> at <b>Global Headstart Specialist Inc.</b> has been received. Our hiring team is currently reviewing all applications for this position. If you are one of the qualifying applicants to proceed to the interview process, our recruiters will contact you for your interview schedule.<br><br> Kindly anticipate hearing from us soon regarding the status of your application.<br><br>Thank you for your interest in our company, and we appreciate the time you invested in this application.<br><br>Your Application ID: <b>${app.id}<b> <br> <br>Regards, <br><br><b>Global Headstart Specailist Inc.</b>
                     `, "Application Received")
 
                     return app
@@ -151,9 +151,9 @@ export const applicaitonMutation = extendType({
                     })
 
                     GESend(app.email, `Dear Mr./Ms./Mrs. <b>${app.Profile.lastname}</b>, <br><br>Congratulations!<br><br>We are pleased to inform you that your application for the <b>${app.JobPost.title}</b> position at <b>Global Headstart Specialist Inc.</b></br> has been approved. Our recruitment team will contact you for further details and instructions.<br><br>We appreciate your interest in working with us and look forward to working with you soon.<br><br>Regards,<br><br>Global Headstart Specailist Inc.
-                    `, "Application Statu")
+                    `, "Application Status")
 
-                    GESend(app.email, `Dear Mr./Ms. <b>${app.Profile.lastname}</b>,<br><br>We inform you that your application has been approved for endorsement by other companies. Please check your application status on your account.<br><br>Kindly anticipate hearing from us soon regarding the status of your application and further instructions.<br><br>Regards,<br><br>Global Headstart Specailist Inc.
+                    GESend(app.email, `Dear Mr./Ms. <b>${app.Profile.lastname}</b>,<br><br>We inform you that your application has been approved for endorsement by other companies. Please check your application status on your account.<br><br>Kindly anticipate hearing from us soon regarding the status of your application and further instructions.<br><br>Regards,<br><br><b>Global Headstart Specialist Inc.</b>
                     `, "Application Endorsement Approved")
 
                     return app
@@ -182,13 +182,7 @@ export const applicaitonMutation = extendType({
                         }
                     })
 
-                    GESend(app.email, `Dear Mr./Ms./Mrs <b>${app.Profile.lastname}</b>, <br><br>After carefully and thoroughly evaluating a significant number of applications; unfortunately, we won’t be able to invite you to the next stage of the hiring process at this time. Despite your impressive resume, we have decided to move forward with a candidate whose qualifications are better suited to this particular position.  <br><br> Please be informed that you will not be able to apply for another position for the next thirty (30) days. <br><br>Once again, thank you so much for taking the time to apply to our company. We wish you the best of luck and much success in your future endeavors.
-                    
-                    <br></br>
-                    
-                    Regards, 
-                    <br></br>
-                    Global Headstart Specailist Inc.`, "Applicantion Rejected")
+                    GESend(app.email, `Dear Mr./Ms./Mrs <b>${app.Profile.lastname}</b>, <br><br>After carefully and thoroughly evaluating a significant number of applications; unfortunately, we won’t be able to invite you to the next stage of the hiring process at this time. Despite your impressive resume, we have decided to move forward with a candidate whose qualifications are better suited to this particular position.  <br><br> Please be informed that you will not be able to apply for another position for the next thirty (30) days. <br><br>Once again, thank you so much for taking the time to apply to our company. We wish you the best of luck and much success in your future endeavors.<br></br>Regards,<br></br><b>Global Headstart Specialist Inc.</b>`, "Application Rejected")
 
 
                     return app
@@ -199,6 +193,15 @@ export const applicaitonMutation = extendType({
             type: "application",
             args: { applicantID: nonNull(idArg()) },
             resolve: async (_, { applicantID }): Promise<any> => {
+
+                const app = await prisma.applicant.findUnique({
+                    where: { id: applicantID },
+                    include: {
+                        Profile: true,
+                        JobPost: true
+                    }
+                })
+                GESend(app.email, `Dear Mr./Ms./Mrs <b>${app.Profile.lastname}</b>,<br><br> Your application for ${app.JobPost.title} has been terminated. We Appricate your time and effort in applying for the said Job. We truly wish for your successful career and best of luck on your fure endeavors.<br><br>Regards, <br><br> <b>Global Headstart Specialist Inc.</b>`, `Application Terminated`)
                 return await prisma.applicant.delete({
                     where: {
                         id: applicantID
