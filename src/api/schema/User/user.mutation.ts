@@ -65,6 +65,8 @@ export const userMutation = extendType({
                 const { userID, role: roles } = verify(token, "HeadStart") as JwtPayload
                 if (userID && roles === "administrator") {
                     const pass = await bcrypt.hash(password, 12)
+
+
                     const users = await prisma.user.findUnique({
                         where: {
                             userID
@@ -76,9 +78,11 @@ export const userMutation = extendType({
                     })
 
 
-                    if (users.email) {
-                        throw new GraphQLError("Email address has already been used.")
+                    if (users.email === email) {
+                        throw new GraphQLError("Email address has benn alread been used.")
                     }
+
+
                     if (role === "employer") {
                         const en = await prisma.user.create({
                             data: {

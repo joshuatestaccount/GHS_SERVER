@@ -25,18 +25,5 @@ export const commentMutation = extendType({
                 })
             }
         })
-        t.field("updateComment", {
-            type: "comment",
-            args: { commentID: nonNull(idArg()), comment: "commentInput" },
-            resolve: async (_, { commentID, comment: { notes, message } }): Promise<any> => {
-                return await prisma.comment.update({
-                    data: {
-                        notes, message,
-                        updatedAt: Dates
-                    },
-                    where: { commentID }
-                })
-            }
-        })
     },
 })

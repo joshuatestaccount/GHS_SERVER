@@ -123,7 +123,7 @@ model Endorsement {
   companyID     String?
   Company       Company?    @relation(fields: [companyID], references: [companyID])
   User          User?       @relation(fields: [userID], references: [userID], onDelete: Cascade)
-  Comment       Comment?
+  Comment       Comment[]
   Endorse       Endorse[]
   Applicant     Applicant[]
 }
@@ -135,8 +135,7 @@ model Endorse {
   createdAt     DateTime      @db.Timestamp()
   User          User          @relation(fields: [userID], references: [userID])
   feedback      Feedback[]
-  Company       Company?      @relation(fields: [companyID], references: [companyID])
-  companyID     String?
+  Company       Company[]
   Endorsement   Endorsement[]
 }
 

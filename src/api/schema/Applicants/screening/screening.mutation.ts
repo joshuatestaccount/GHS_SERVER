@@ -84,7 +84,7 @@ export const screeningMutation = extendType({
                     `, `Interview Schedule for ${applicant.JobPost.title}`)
 
 
-                    Recipient(userInt.User.email, `Dear Mr./Ms./Mrs. <b>${userInt.User.Profile.lastname}</b>,<br><br>Good day!<br><br>Your interview schedule with <b>${applicant.Profile.firstname} ${applicant.Profile.lastname}</b> will be on ${format(new Date(start), "MMMM dd, yyyy h:mm:ss a")}-${format(new Date(end), "MMMM dd, yyyy h:mm:ss a")}.<br><br>If you are using GMail for your employee account, kindly check your Google Calendar for the Google Meet link. Otherwise, kindly send email <b>${applicant.Profile.firstname} ${applicant.Profile.lastname}</b> and email via <b>${applicant.email}</b> regarding the meeting link.<br><br>Regards, <br><br> <b>Global Headstart Specialist Inc.</b>
+                    Recipient(userInt.User.email, `Dear Mr./Ms./Mrs. <b>${userInt.User.Profile.lastname}</b>,<br><br>Good day!<br><br>Your interview schedule with <b>${applicant.Profile.firstname} ${applicant.Profile.lastname}</b> will be on ${format(new Date(start), "MMMM dd, yyyy h:mm:ss a")}-${format(new Date(end), "MMMM dd, yyyy h:mm:ss a")}.<br><br>If you are using GMail for your employee account, kindly check your Google Calendar for the Google Meet link. Otherwise, kindly send email <b>${applicant.Profile.firstname} ${applicant.Profile.lastname}</b> an email via <b>${applicant.email}</b> regarding the meeting link.<br><br>Regards, <br><br> <b>Global Headstart Specialist Inc.</b>
                     `, "Interview Schedule")
 
 

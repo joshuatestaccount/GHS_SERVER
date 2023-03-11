@@ -12,7 +12,11 @@ export const companyObject = objectType({
             resolve: async (parent): Promise<any> => {
                 return await prisma.endorse.findMany({
                     where: {
-                        companyID: parent.companyID
+                        Company: {
+                            some: {
+                                companyID: parent.companyID
+                            }
+                        }
                     }
                 })
             }

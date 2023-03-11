@@ -29,7 +29,11 @@ export const endorQuery = extendType({
                 })
                 return await prisma.endorse.findMany({
                     where: {
-                        companyID: company.companyID,
+                        Company: {
+                            some: {
+                                companyID: company.companyID
+                            }
+                        },
                         endorseStatus: status as any,
 
                     },

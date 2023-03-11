@@ -414,6 +414,7 @@ export interface NexusGenFieldTypes {
   endorsement: { // field return type
     Status: string | null; // String
     applicants: Array<NexusGenRootTypes['application'] | null> | null; // [application]
+    company: Array<NexusGenRootTypes['company'] | null> | null; // [company]
     createdAt: NexusGenScalars['Date'] | null; // Date
     endorse: Array<NexusGenRootTypes['endorse'] | null> | null; // [endorse]
     endorseBy: Array<NexusGenRootTypes['user'] | null> | null; // [user]
@@ -664,6 +665,7 @@ export interface NexusGenFieldTypeNames {
   endorsement: { // field return type name
     Status: 'String'
     applicants: 'application'
+    company: 'company'
     createdAt: 'Date'
     endorse: 'endorse'
     endorseBy: 'user'

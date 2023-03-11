@@ -29,8 +29,8 @@ CREATE TABLE "User" (
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
     "role" "Role" NOT NULL,
-    "createdAt" DATE NOT NULL,
-    "updatedAt" DATE NOT NULL,
+    "createdAt" TIMESTAMP NOT NULL,
+    "updatedAt" TIMESTAMP NOT NULL,
     "companyID" TEXT NOT NULL,
     "pin" TEXT NOT NULL DEFAULT '0000',
 
@@ -52,7 +52,7 @@ CREATE TABLE "Notification" (
     "notificationID" TEXT NOT NULL,
     "title" TEXT NOT NULL,
     "notificationStatus" "notificationStatus" NOT NULL DEFAULT 'unread',
-    "createdAt" DATE NOT NULL,
+    "createdAt" TIMESTAMP NOT NULL,
     "userID" TEXT,
 
     CONSTRAINT "Notification_pkey" PRIMARY KEY ("notificationID")
@@ -64,7 +64,7 @@ CREATE TABLE "Profile" (
     "firstname" TEXT NOT NULL,
     "lastname" TEXT NOT NULL,
     "phone" TEXT NOT NULL,
-    "birthday" DATE,
+    "birthday" TIMESTAMP,
     "applicantID" TEXT,
     "userID" TEXT,
 
@@ -109,8 +109,8 @@ CREATE TABLE "Comment" (
     "commentID" TEXT NOT NULL,
     "message" TEXT NOT NULL,
     "notes" TEXT NOT NULL,
-    "createdAt" DATE NOT NULL,
-    "updatedAt" DATE NOT NULL,
+    "createdAt" TIMESTAMP NOT NULL,
+    "updatedAt" TIMESTAMP NOT NULL,
     "endorsementID" TEXT,
     "userID" TEXT,
 
@@ -121,8 +121,8 @@ CREATE TABLE "Comment" (
 CREATE TABLE "Endorsement" (
     "endorsementID" TEXT NOT NULL,
     "Status" TEXT NOT NULL,
-    "createdAt" DATE NOT NULL,
-    "updatedAt" DATE NOT NULL,
+    "createdAt" TIMESTAMP NOT NULL,
+    "updatedAt" TIMESTAMP NOT NULL,
     "userID" TEXT,
     "companyID" TEXT,
 
@@ -134,8 +134,7 @@ CREATE TABLE "Endorse" (
     "endorseID" TEXT NOT NULL,
     "endorseStatus" "endorseStatus" NOT NULL DEFAULT 'waiting',
     "userID" TEXT NOT NULL,
-    "createdAt" DATE NOT NULL,
-    "companyID" TEXT,
+    "createdAt" TIMESTAMP NOT NULL,
 
     CONSTRAINT "Endorse_pkey" PRIMARY KEY ("endorseID")
 );
@@ -166,8 +165,8 @@ CREATE TABLE "Applicant" (
     "applicantID" TEXT NOT NULL,
     "id" TEXT NOT NULL,
     "email" TEXT NOT NULL,
-    "createdAt" DATE NOT NULL,
-    "updatedAt" DATE NOT NULL,
+    "createdAt" TIMESTAMP NOT NULL,
+    "updatedAt" TIMESTAMP NOT NULL,
     "status" "applicantStatus" NOT NULL DEFAULT 'waiting',
     "jobPostID" TEXT NOT NULL,
     "interviewerID" TEXT,
@@ -192,7 +191,7 @@ CREATE TABLE "UploadFile" (
     "uploadFileID" TEXT NOT NULL,
     "file" TEXT NOT NULL,
     "video" TEXT NOT NULL,
-    "createdAt" DATE NOT NULL,
+    "createdAt" TIMESTAMP NOT NULL,
     "applicantID" TEXT,
 
     CONSTRAINT "UploadFile_pkey" PRIMARY KEY ("uploadFileID")
@@ -206,8 +205,8 @@ CREATE TABLE "JobPost" (
     "qualification" TEXT NOT NULL,
     "responsibilities" TEXT NOT NULL,
     "status" "JobStatus" NOT NULL,
-    "createdAt" DATE NOT NULL,
-    "updatedAt" DATE NOT NULL,
+    "createdAt" TIMESTAMP NOT NULL,
+    "updatedAt" TIMESTAMP NOT NULL,
     "companyID" TEXT NOT NULL,
     "notificationID" TEXT,
     "userID" TEXT NOT NULL,
@@ -230,6 +229,12 @@ CREATE TABLE "JobDetails" (
 
 -- CreateTable
 CREATE TABLE "_LogsToUser" (
+    "A" TEXT NOT NULL,
+    "B" TEXT NOT NULL
+);
+
+-- CreateTable
+CREATE TABLE "_CompanyToEndorse" (
     "A" TEXT NOT NULL,
     "B" TEXT NOT NULL
 );
@@ -298,6 +303,12 @@ CREATE UNIQUE INDEX "_LogsToUser_AB_unique" ON "_LogsToUser"("A", "B");
 CREATE INDEX "_LogsToUser_B_index" ON "_LogsToUser"("B");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "_CompanyToEndorse_AB_unique" ON "_CompanyToEndorse"("A", "B");
+
+-- CreateIndex
+CREATE INDEX "_CompanyToEndorse_B_index" ON "_CompanyToEndorse"("B");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "_EndorseToEndorsement_AB_unique" ON "_EndorseToEndorsement"("A", "B");
 
 -- CreateIndex
@@ -340,9 +351,6 @@ ALTER TABLE "Endorsement" ADD CONSTRAINT "Endorsement_userID_fkey" FOREIGN KEY (
 ALTER TABLE "Endorse" ADD CONSTRAINT "Endorse_userID_fkey" FOREIGN KEY ("userID") REFERENCES "User"("userID") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Endorse" ADD CONSTRAINT "Endorse_companyID_fkey" FOREIGN KEY ("companyID") REFERENCES "Company"("companyID") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE "Feedback" ADD CONSTRAINT "Feedback_applicantID_fkey" FOREIGN KEY ("applicantID") REFERENCES "Applicant"("applicantID") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -382,7 +390,7 @@ ALTER TABLE "JobPost" ADD CONSTRAINT "JobPost_companyID_fkey" FOREIGN KEY ("comp
 ALTER TABLE "JobPost" ADD CONSTRAINT "JobPost_notificationID_fkey" FOREIGN KEY ("notificationID") REFERENCES "Notification"("notificationID") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "JobPost" ADD CONSTRAINT "JobPost_userID_fkey" FOREIGN KEY ("userID") REFERENCES "User"("userID") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "JobPost" ADD CONSTRAINT "JobPost_userID_fkey" FOREIGN KEY ("userID") REFERENCES "User"("userID") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "JobDetails" ADD CONSTRAINT "JobDetails_jobPostID_fkey" FOREIGN KEY ("jobPostID") REFERENCES "JobPost"("jobPostID") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -392,6 +400,12 @@ ALTER TABLE "_LogsToUser" ADD CONSTRAINT "_LogsToUser_A_fkey" FOREIGN KEY ("A") 
 
 -- AddForeignKey
 ALTER TABLE "_LogsToUser" ADD CONSTRAINT "_LogsToUser_B_fkey" FOREIGN KEY ("B") REFERENCES "User"("userID") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_CompanyToEndorse" ADD CONSTRAINT "_CompanyToEndorse_A_fkey" FOREIGN KEY ("A") REFERENCES "Company"("companyID") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_CompanyToEndorse" ADD CONSTRAINT "_CompanyToEndorse_B_fkey" FOREIGN KEY ("B") REFERENCES "Endorse"("endorseID") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_EndorseToEndorsement" ADD CONSTRAINT "_EndorseToEndorsement_A_fkey" FOREIGN KEY ("A") REFERENCES "Endorse"("endorseID") ON DELETE CASCADE ON UPDATE CASCADE;

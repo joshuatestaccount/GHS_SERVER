@@ -42,6 +42,13 @@ export const endorseMutation = extendType({
                         }
                     })
 
+
+                    const company = await prisma.company.findUnique({
+                        where: {
+                            companyID
+                        }
+                    })
+
                     const endorse = await prisma.endorse.create({
 
                         data: {
@@ -91,7 +98,7 @@ export const endorseMutation = extendType({
                     })
 
                     GESend(applicant.email, `Dear Mr./Ms.Mrs. <b>${applicant.Profile.lastname}</b><br><br>Good Day, ${applicant.Profile.lastname}!<br><br>We are pleased to inform you that your application's endorsement to <b>${endorse.Endorsement[ 0 ].Company.companyName}</b> has been approved. Please check the progress of your application on your account.<br><br>Kindly anticipate hearing from us soon regarding the status of your application and further instructions.<br><br>Regards, <br><br><b>Global Headstart Specialist Inc.</b>
-                    ` , `${applicant.JobPost.title} is endorsed to ${endorse.Endorsement[ 0 ].Company.companyName}`)
+                    ` , `Application for ${applicant.JobPost.title} is endorsed to ${company.companyName}`)
                     return endorse
                 })
             }
@@ -156,8 +163,8 @@ export const endorseMutation = extendType({
 
 
 
-                    if(endorse.endorseStatus === "approved") {
-                        
+                    if (endorse.endorseStatus === "approved") {
+
                     }
 
                     if (endorse.endorseStatus === "rejected") {

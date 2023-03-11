@@ -243,6 +243,7 @@ type endorse {
 type endorsement {
   Status: String
   applicants: [application]
+  company: [company]
   createdAt: Date
   endorse: [endorse]
   endorseBy: [user]

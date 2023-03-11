@@ -1,5 +1,4 @@
 import { google } from 'googleapis'
-import { GESend } from './email.js';
 
 
 function generateRandomString(length: number) {
@@ -29,7 +28,7 @@ export default async function googleCalendar(start: string, end: string, email: 
     const calendar = google.calendar({ version: 'v3', auth, })
 
     try {
-        const calendars = await calendar.events.insert({
+        return await calendar.events.insert({
             auth: auth,
             calendarId: 'primary',
             conferenceDataVersion: 1,
@@ -64,11 +63,6 @@ export default async function googleCalendar(start: string, end: string, email: 
             }
         }, {})
 
-        // draft
-        GESend(`${email}`, `Dear ${email} Your interview schedule will be on ${start} until ${end}. Kindly check your Google Calendar .....${calendars.data.conferenceData.createRequest.conferenceSolutionKey.type}`, "Interview Schedule")
-        
-        
-        GESend(`${email}`, `Dear ${email} Your interview schedule will be on ${start} until ${end}. Kindly check your Google Calendar .....${calendars.data.conferenceData.createRequest.conferenceSolutionKey.type}`, "Interview Schedule")
 
     }
     catch (error) {

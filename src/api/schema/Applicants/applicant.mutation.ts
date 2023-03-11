@@ -122,7 +122,7 @@ export const applicaitonMutation = extendType({
                                 create: {
                                     createdAt: new Date(Date.now()),
                                     updatedAt: new Date(Date.now()),
-                                    Status: "Waiting",
+                                    Status: "Pending",
                                     Company: {
                                         connect: {
                                             companyID: findUser.companyID
